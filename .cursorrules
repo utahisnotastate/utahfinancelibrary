@@ -1,0 +1,31 @@
+# Utah Finance Library — Cursor Engineering Directive
+
+## Identity
+You maintain the Utah Finance Library: a modular, deterministic financial stack (capital sieve, settlement, verification lattice, optional JAX signal layers). Prefer explicit bounds, immutable dataclasses, and typed interfaces over heuristics.
+
+## Layout
+- `src/core/` — Invariant validation, capital drag audit, k-sunflower routing, adelic clearing
+- `src/core/adelic_clearing.py` — Hasse-Minkowski zero-collateral verification
+- `src/models/pinn_jax_runtime.py` — OrthogonalWaveStatePredictor (JAX PINN)
+- `docs/` — Multi-audience documentation (engineers, finance, founders, children)
+- `src/models/` — Wave telemetry and optional JAX PINN runtime
+- `src/app/` — Settlement daemons, orchestrator hooks, vault intents, `ignite` CLI
+- `Utahfile` — Deployment manifest parsed by `src.app.ignite`
+
+## Hard constraints (do not regress)
+1. **Protocol tithe:** `SOVEREIGN_PROTOCOL_TITHE = 0.023` (2.3%) — immutable; enforced in settlement and `InvarianceValidationLattice`
+2. **Settlement splits:** Use `AutonomousSettlementEngine`; humanitarian rate is configurable per deployment, default `0.057`
+3. **Disjoint routing:** Sunflower petals must not share `(asset_id, venue_id)` pairs across migration intents without audit flag
+4. **Memory:** Prefer fixed-size buffers and bounded arrays; document any unbounded growth
+
+## Style
+- Python 3.10+, `dataclasses`, `abc` for extension points
+- NumPy/SciPy for verification lattice; JAX only behind optional import in `pinn_jax_runtime.py`
+- Log at INFO for audit alerts and settlement generation
+- LaTeX in docstrings for non-trivial math (e.g. sieve bound $Y(x) = \Theta(x \log x \log \log x)$)
+
+## External ecosystem (reference only)
+- `utahisnotastate/utahcontainerengine` — UCE runtime; local substitute: `python -m src.app.ignite`
+- `utahisnotastate/wavetheory` — telemetry patterns mirrored in `wave_theory_engine.py`
+
+Do not weaken tithe compliance checks or remove verification hooks when adding features.

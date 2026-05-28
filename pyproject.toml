@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "utah-finance-library"
+version = "6.0.0"
+description = "Modular open-source financial architecture: capital sieve, settlement, and verification lattice"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Utah Finance Library Contributors" }]
+keywords = ["finance", "fintech", "open-source", "settlement", "jax", "pinn"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Financial and Insurance Industry",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business :: Financial",
+]
+dependencies = [
+    "numpy>=1.24",
+    "scipy>=1.11",
+    "pyyaml>=6.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/utahisnotastate/utahfinancelibrary"
+Repository = "https://github.com/utahisnotastate/utahfinancelibrary"
+Documentation = "https://github.com/utahisnotastate/utahfinancelibrary/tree/main/docs"
+Issues = "https://github.com/utahisnotastate/utahfinancelibrary/issues"
+
+[project.optional-dependencies]
+jax = ["jax>=0.4.20", "jaxlib>=0.4.20", "optax>=0.2.0"]
+dev = ["pytest>=7.4", "pytest-asyncio>=0.23"]
+
+[project.scripts]
+utah-sieve = "src.app.utah_prime_sieve_daemon:main"
+utah-verify = "src.core.utah_verification_manifold:main"
+utah-ignite = "src.app.ignite:main"
+utah-adelic = "src.app.hasse_minkowski_daemon:main"
+utah-alpha = "src.models.pinn_jax_runtime:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
