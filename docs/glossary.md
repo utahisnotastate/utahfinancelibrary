@@ -23,3 +23,15 @@
 | **Verification lattice** | `InvarianceValidationLattice` — mathematical runtime checks |
 | **Wave telemetry** | Bounded ring-buffer statistics on market ticks |
 | **Zero collateral** | `required_collateral == 0` after adelic verification |
+| **Persistent homology** | Multi-scale topological summary (Betti numbers, barcodes) of data shape |
+| **Betti numbers** | $b_0$ components, $b_1$ loops, $b_2$ voids of a complex |
+| **Topological Risk Parity (TRP)** | Allocation inversely weighted by topological contagion load |
+| **Vietoris-Rips complex** | Simplicial complex built by connecting points within a radius |
+| **Wasserstein barcode distance** | Optimal-transport distance between persistence diagrams |
+| **Ricci flow** | PDE $\partial_t g_{ij} = -2R_{ij}$ evolving a metric toward constant curvature |
+| **Ricci flow covariance** | Covariance denoised by evolving it as a Riemannian metric |
+| **Navier-Stokes routing** | Rebalancing modeled as incompressible (mass-conserving) fluid flow |
+| **Velocity field** | Continuous capital-flow rates returned by the routing solver |
+| **Spectral CVaR veto** | Halt trigger when a loss operator's spectral radius breaches a wall |
+| **Symplectic Veto** | The execution-halt action fired by the spectral CVaR supervisor |
+| **Dirichlet boundary conditions** | Pin eigenfunctions to fixed values at the domain edge |

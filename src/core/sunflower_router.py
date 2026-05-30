@@ -1,11 +1,20 @@
-"""k-sunflower disjoint capital routing — transfinite sieve topology layer."""
+"""k-sunflower disjoint capital routing — transfinite sieve topology layer.
+
+Also hosts the Navier-Stokes liquidity-routing API, which models capital
+reallocation as an incompressible fluid flow (viscosity = market impact,
+pressure gradient = alpha signal) instead of a static L1 turnover penalty.
+"""
 
 from __future__ import annotations
 
 import dataclasses
 import logging
 import time
-from typing import Iterable, List, Set
+from typing import Dict, Iterable, List, Set, Tuple
+
+import numpy as np
+
+from src.core._backend import as_array
 
 logger = logging.getLogger(__name__)
 
@@ -96,3 +105,96 @@ class UtahTransfiniteSieve:
             "elapsed_seconds": elapsed,
             "k_sunflower_intersection_count": intersection_count,
         }
+
+
+# --------------------------------------------------------------------------- #
+# Navier-Stokes Liquidity Routing
+# --------------------------------------------------------------------------- #
+def calculate_navier_stokes_rebalance_flow(
+    current_weights,
+    target_manifold,
+    market_viscosity_tensor,
+    kinematic_constraints: Dict,
+) -> Tuple[np.ndarray, np.ndarray]:
+    r"""
+    Solve the (discretised, over-asset) momentum equation for capital flow.
+
+    We treat the weight vector as a density on a graph of assets and seek a
+    velocity field $v$ moving mass from ``current_weights`` toward
+    ``target_manifold`` while (a) respecting viscous market impact and
+    (b) conserving total capital (incompressibility / divergence-free flow).
+
+    Momentum (steady-state, low-Reynolds Stokes limit):
+
+        $$\nu\, L\, v = -\nabla p + f, \qquad \mathbf{1}^\top v = 0$$
+
+    where $L$ is the graph Laplacian (diffusive coupling), $\nu$ the viscosity
+    (slippage), $f = (\text{target} - \text{current})$ the alpha-driven body
+    force, and $p$ the pressure enforcing mass conservation.
+
+    Parameters
+    ----------
+    current_weights : array-like, shape (N,)
+    target_manifold : array-like, shape (N,)
+    market_viscosity_tensor : array-like, scalar, (N,) or (N, N)
+        Per-asset / pairwise slippage. Scalar or vector is treated as diagonal.
+    kinematic_constraints : dict
+        Optional keys: ``max_velocity`` (clip speed), ``coupling`` (graph
+        Laplacian weight, default 1.0).
+
+    Returns
+    -------
+    (velocity_field, pressure_gradient) : Tuple[np.ndarray, np.ndarray]
+        ``velocity_field`` (dv/dt over assets, mass-conserving) and the
+        ``pressure_gradient`` that routes the arbitrage.
+    """
+    w0 = as_array(current_weights).ravel()
+    wt = as_array(target_manifold).ravel()
+    n = w0.shape[0]
+    if wt.shape[0] != n:
+        raise ValueError("current_weights and target_manifold must match length")
+
+    visc = as_array(market_viscosity_tensor)
+    if visc.ndim == 0:
+        visc_mat = np.eye(n) * float(visc)
+    elif visc.ndim == 1:
+        visc_mat = np.diag(visc)
+    else:
+        visc_mat = visc
+    visc_mat = visc_mat + 1e-9 * np.eye(n)
+
+    coupling = float(kinematic_constraints.get("coupling", 1.0))
+    # graph Laplacian for a fully-connected asset network (diffusive coupling)
+    laplacian = coupling * (n * np.eye(n) - np.ones((n, n)))
+
+    body_force = wt - w0  # alpha pressure gradient (desired transport)
+
+    # Operator A = viscosity * Laplacian  (+ regularisation for invertibility)
+    a_op = visc_mat @ laplacian + 1e-6 * np.eye(n)
+
+    # Pressure solves the projection making the flow divergence-free (sum v = 0).
+    # Solve A v = f - grad p with constraint 1^T v = 0 via a saddle-point system.
+    ones = np.ones((n, 1))
+    kkt = np.block([[a_op, ones], [ones.T, np.zeros((1, 1))]])
+    rhs = np.concatenate([body_force, np.zeros(1)])
+    sol, *_ = np.linalg.lstsq(kkt, rhs, rcond=None)
+    velocity = sol[:n]
+    lagrange_pressure = float(sol[n])
+
+    # pressure gradient field = alpha force minus realised viscous transport
+    pressure_gradient = body_force - a_op @ velocity
+
+    max_v = kinematic_constraints.get("max_velocity")
+    if max_v is not None:
+        speed = np.linalg.norm(velocity)
+        if speed > max_v and speed > 0:
+            velocity = velocity * (float(max_v) / speed)
+
+    dissipation = float(velocity @ (visc_mat @ velocity))
+    logger.info(
+        "[NAVIER] |v|=%.4f dissipation=%.6e p0=%.4e",
+        float(np.linalg.norm(velocity)),
+        dissipation,
+        lagrange_pressure,
+    )
+    return velocity, pressure_gradient

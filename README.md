@@ -20,6 +20,10 @@ Part of the broader [utahisnotastate](https://github.com/utahisnotastate) ecosys
 | **Settlement manifold** | Programmatic 2.3% protocol tithe + 5.7% humanitarian split |
 | **Adelic bypass** | Hasse-Minkowski local-global verification → zero modeled clearing margin |
 | **Wave PINN** | JAX physics-informed alpha (`OrthogonalWaveStatePredictor`) |
+| **Topological Risk Parity** | Persistent-homology allocation (`optimize_topological_risk_parity`) |
+| **Ricci flow covariance** | Geometric covariance denoising (`compute_ricci_flow_covariance`) |
+| **Navier-Stokes routing** | Mass-conserving rebalance flow (`calculate_navier_stokes_rebalance_flow`) |
+| **Spectral CVaR veto** | Analytic drawdown wall (`apply_spectral_cvar_veto`) |
 | **Verification lattice** | Navier alignment, adelic sieve bounds, omnibus audit |
 | **Sovereign vault** | Threshold-signed intent custody |
 
@@ -76,6 +80,7 @@ Full guides for every audience live in **[`docs/`](docs/README.md)**:
 | [05-settlement-governance.md](docs/05-settlement-governance.md) | Ops & compliance |
 | [06-adelic-clearinghouse-bypass.md](docs/06-adelic-clearinghouse-bypass.md) | Adelic settlement deep dive |
 | [07-wave-pinn-alpha-engine.md](docs/07-wave-pinn-alpha-engine.md) | PINN / JAX alpha |
+| [08-continuous-time-allocation.md](docs/08-continuous-time-allocation.md) | TRP, Ricci flow, NS routing, spectral CVaR |
 | [glossary.md](docs/glossary.md) | Terminology |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | System overview & diagrams |
 

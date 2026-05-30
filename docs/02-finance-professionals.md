@@ -89,6 +89,22 @@ python -m src.app.hasse_minkowski_daemon
 
 Review `migration_intents`, `adelic_clearing`, and `alpha_signal` in the JSON output.
 
+## Migrating from `riskfolio-lib`
+
+The [Continuous-Time Topological Allocation](08-continuous-time-allocation.md)
+module offers geometric counterparts to common `riskfolio-lib` workflows:
+
+| riskfolio-lib | Utah equivalent |
+|---------------|-----------------|
+| `HCPortfolio` (HRP/NCO) | `optimize_topological_risk_parity` |
+| Ledoit-Wolf / OAS shrinkage | `compute_ricci_flow_covariance` |
+| L1 turnover constraint | `calculate_navier_stokes_rebalance_flow` |
+| Mean-CVaR / EVaR / Max-DD | `apply_spectral_cvar_veto` |
+
+These are research-grade building blocks; validate against your existing convex
+baselines before reallocating capital. They complement — not blindly replace —
+proven methods.
+
 ## Migration path from Bloomberg / Enfusion
 
 1. **Week 1:** Export positions by venue → feed `AssetPosition` list  

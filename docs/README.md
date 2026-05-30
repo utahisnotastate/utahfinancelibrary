@@ -14,6 +14,7 @@ Welcome to the official documentation set for the Utah Finance Library. These gu
 | Compliance & operations | [Settlement & Tithe Protocol](05-settlement-governance.md) | 2.3% tithe, 5.7% humanitarian rate, audit hooks |
 | Advanced / SOTA | [Adelic Clearinghouse Bypass](06-adelic-clearinghouse-bypass.md) | Hasse-Minkowski zero-collateral model |
 | Advanced / SOTA | [Wave-State PINN Alpha Engine](07-wave-pinn-alpha-engine.md) | Physics-informed neural networks in JAX |
+| Advanced / SOTA | [Continuous-Time Topological Allocation](08-continuous-time-allocation.md) | TRP, Ricci flow, Navier-Stokes routing, spectral CVaR |
 | Everyone | [Glossary](glossary.md) | Terms used across the library |
 
 ## Quick commands
