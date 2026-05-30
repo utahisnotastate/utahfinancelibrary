@@ -15,6 +15,7 @@ Welcome to the official documentation set for the Utah Finance Library. These gu
 | Advanced / SOTA | [Adelic Clearinghouse Bypass](06-adelic-clearinghouse-bypass.md) | Hasse-Minkowski zero-collateral model |
 | Advanced / SOTA | [Wave-State PINN Alpha Engine](07-wave-pinn-alpha-engine.md) | Physics-informed neural networks in JAX |
 | Advanced / SOTA | [Continuous-Time Topological Allocation](08-continuous-time-allocation.md) | TRP, Ricci flow, Navier-Stokes routing, spectral CVaR |
+| Theory | [Ricci-Flow Spectral Stabilization](09_Ricci_Flow_Stabilization.tex) | Curvature-uniformization theorem for the autodiff denoiser (LaTeX) |
 | Everyone | [Glossary](glossary.md) | Terms used across the library |
 
 ## Quick commands

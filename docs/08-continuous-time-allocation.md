@@ -172,6 +172,10 @@ as the scalar curvature becomes constant), not by a discrete surrogate. Trace
 spectral diagnostic but is **never** invoked by the denoiser (enforced in
 `tests/test_ricci_flow_autodiff.py::test_api_does_not_call_numpy_proxy`).
 
+> The curvature-uniformization theorem and its precise correspondence to the
+> implemented contraction ratio $\gamma$ are formalized in
+> [`docs/09_Ricci_Flow_Stabilization.tex`](09_Ricci_Flow_Stabilization.tex).
+
 ```python
 from src.models.manifold_kernel import compute_ricci_flow_covariance
 
