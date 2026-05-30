@@ -116,10 +116,11 @@ class OrthogonalWaveStatePredictor:
 
         jacobian_fn = vmap(grad(single_forward))
         strain_rate = jacobian_fn(market_data)
-        if strain_rate.ndim == 1:
-            vorticity_penalty = jnp.mean(jnp.abs(strain_rate))
-        else:
+        if strain_rate.ndim >= 3:
             vorticity_penalty = jnp.mean(jnp.abs(jnp.diagonal(strain_rate, axis1=1, axis2=2)))
+        else:
+            # per-sample input gradient (batch, features): use mean |strain|
+            vorticity_penalty = jnp.mean(jnp.abs(strain_rate))
 
         return data_loss + vorticity_weight * vorticity_penalty
 
@@ -130,7 +131,7 @@ class OrthogonalWaveStatePredictor:
         key: Optional[Any] = None,
         hidden_dim: int = 64,
     ) -> Dict[str, jnp.ndarray]:
-        key = key or jax.random.PRNGKey(0)
+        key = jax.random.PRNGKey(0) if key is None else key
         k1, k2 = jax.random.split(key)
         h = hidden_dim
         return {

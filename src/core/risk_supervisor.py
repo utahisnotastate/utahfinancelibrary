@@ -158,3 +158,156 @@ def spectral_cvar_diagnostics(
     radius = spectral_radius(loss_operator, grid, bc)
     boundary = _confidence_boundary(confidence_level, as_array(grid))
     return radius, boundary, bool(radius > boundary)
+
+
+# --------------------------------------------------------------------------- #
+# Continuous Laplace-Beltrami principal eigenvalue (Feynman-Kac drawdown bound)
+# --------------------------------------------------------------------------- #
+# JAX is mandatory for the continuous path: derivatives of the test functions
+# and of the metric are taken analytically (machine precision), and the
+# eigenproblem is solved by a *spectral* Galerkin projection onto a smooth basis
+# that exactly satisfies the Dirichlet conditions — exponential (not O(h^2))
+# convergence, unlike finite-difference matrices.
+try:
+    import jax
+    from jax import config as _jax_config
+
+    _jax_config.update("jax_enable_x64", True)
+    import jax.numpy as jnp
+
+    _JAX_OK = True
+except ImportError:  # pragma: no cover
+    jax = None  # type: ignore
+    jnp = None  # type: ignore
+    _JAX_OK = False
+
+
+def _require_jax_continuous() -> None:
+    if not _JAX_OK:
+        raise RuntimeError(
+            "The continuous Laplace-Beltrami drawdown bound requires JAX "
+            "(exact autodiff of the generator). Install: pip install -e '.[jax]'."
+        )
+
+
+def principal_eigenvalue_laplace_beltrami(
+    metric_fn: Callable,
+    drift_fn: Callable,
+    domain: Tuple[float, float],
+    n_basis: int = 24,
+    n_quad: int = 400,
+) -> float:
+    r"""
+    Smallest Dirichlet eigenvalue $\lambda_0$ of $-\mathcal{L}$ on a 1D domain,
+
+        $$\mathcal{L} = \tfrac12 \Delta_M + b(x)\cdot\nabla,$$
+
+    where $\Delta_M$ is the Laplace-Beltrami operator of the (scalar) metric
+    ``metric_fn(x) = g(x) > 0`` and ``drift_fn(x) = b(x)``.
+
+    Method: Galerkin projection onto the sine basis
+    $\varphi_k(x) = \sin\!\big(k\pi (x-a)/(b-a)\big)$ (vanishing on $\partial\Omega$,
+    so Dirichlet conditions are satisfied exactly), with operator actions taken
+    by JAX autodiff and inner products under the Riemannian measure
+    $dV = \sqrt{g}\,dx$. Returns $\lambda_0 > 0$.
+    """
+    _require_jax_continuous()
+    a, b = float(domain[0]), float(domain[1])
+    L = b - a
+    xs = jnp.linspace(a, b, n_quad + 2)[1:-1]
+    w = (b - a) / (n_quad + 1)  # uniform quadrature weight
+
+    ks = jnp.arange(1, n_basis + 1)
+
+    def phi(k, x):
+        return jnp.sin(k * jnp.pi * (x - a) / L)
+
+    def laplace_beltrami(fn, x):
+        # (1/sqrt(g)) d/dx( sqrt(g) * (1/g) * d fn/dx )
+        def inner(y):
+            g = metric_fn(y)
+            dfn = jax.grad(fn)(y)
+            return jnp.sqrt(g) * (1.0 / g) * dfn
+
+        g = metric_fn(x)
+        return (1.0 / jnp.sqrt(g)) * jax.grad(inner)(x)
+
+    def generator(fn, x):
+        return 0.5 * laplace_beltrami(fn, x) + drift_fn(x) * jax.grad(fn)(x)
+
+    sqrt_g = jnp.sqrt(jax.vmap(metric_fn)(xs))  # measure
+
+    # build basis value & -L action tables on the quad grid
+    def phi_vec(x):
+        return jax.vmap(lambda k: phi(k, x))(ks)
+
+    Phi = jax.vmap(phi_vec)(xs)  # (n_quad, n_basis)
+
+    def negL_phi_at(x):
+        return jax.vmap(lambda k: -generator(lambda y: phi(k, y), x))(ks)
+
+    NegLPhi = jax.vmap(negL_phi_at)(xs)  # (n_quad, n_basis)
+
+    measure = (w * sqrt_g)[:, None]  # (n_quad,1)
+    A = (Phi * measure).T @ NegLPhi  # stiffness <phi_k, -L phi_j>
+    M = (Phi * measure).T @ Phi  # mass <phi_k, phi_j>
+
+    A = 0.5 * (A + A.T)  # symmetrise (self-adjoint under dV when b=0)
+    M = 0.5 * (M + M.T)
+
+    # generalized eigenproblem A v = lambda M v
+    M_inv = jnp.linalg.inv(M)
+    eig = jnp.linalg.eigvals(M_inv @ A)
+    eig_real = jnp.real(eig)
+    lam0 = float(jnp.min(eig_real))
+    return lam0
+
+
+def feynman_kac_drawdown_bound(
+    lambda0: float,
+    horizon: float,
+    eigenfunction_integral: float = 1.0,
+) -> float:
+    r"""
+    Spectral (Feynman-Kac) upper bound on the drawdown-exceedance probability:
+
+        $$\mathbb{P}\!\left(\sup_{0\le t\le T}\text{Drawdown}_t > \mathcal{D}_{max}\right)
+            \le C\, e^{-\lambda_0 T}.$$
+
+    ``eigenfunction_integral`` is the constant $C = \int_\Omega \phi_0\,dx$.
+    """
+    return float(eigenfunction_integral * math.exp(-lambda0 * horizon))
+
+
+def apply_continuous_spectral_cvar_veto(
+    metric_fn: Callable,
+    drift_fn: Callable,
+    domain: Tuple[float, float],
+    confidence_level: float,
+    horizon: float,
+    eigenfunction_integral: float = 1.0,
+    n_basis: int = 24,
+) -> bool:
+    r"""
+    Continuous Laplace-Beltrami veto. Computes the principal eigenvalue
+    $\lambda_0$ of the portfolio generator on the drawdown domain and the
+    Feynman-Kac bound $C e^{-\lambda_0 T}$. Vetoes (returns ``True``) when the
+    bounded exceedance probability is greater than the tolerance
+    $1 - \text{confidence\_level}$.
+
+    This is an analytic supremum on the exit probability, not a histogram of past
+    scenarios.
+    """
+    _require_jax_continuous()
+    lam0 = principal_eigenvalue_laplace_beltrami(metric_fn, drift_fn, domain, n_basis=n_basis)
+    bound = feynman_kac_drawdown_bound(lam0, horizon, eigenfunction_integral)
+    tolerance = 1.0 - confidence_level
+    veto = bound > tolerance
+    logger.info(
+        "[LAPLACE-BELTRAMI] lambda0=%.6f bound=%.6e tol=%.6e veto=%s",
+        lam0,
+        bound,
+        tolerance,
+        veto,
+    )
+    return bool(veto)

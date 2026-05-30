@@ -35,3 +35,13 @@
 | **Spectral CVaR veto** | Halt trigger when a loss operator's spectral radius breaches a wall |
 | **Symplectic Veto** | The execution-halt action fired by the spectral CVaR supervisor |
 | **Dirichlet boundary conditions** | Pin eigenfunctions to fixed values at the domain edge |
+| **Christoffel symbols** | $\Gamma^k_{ij}$, connection coefficients of a metric |
+| **Riemann tensor** | $R^l{}_{ijk}$, full curvature of a Riemannian manifold |
+| **Ricci tensor** | $R_{jk}$, trace of Riemann; drives Ricci flow |
+| **Scalar curvature** | $R = g^{jk}R_{jk}$, single-number curvature |
+| **Laplace-Beltrami operator** | $\Delta_M$, the Laplacian on a Riemannian manifold |
+| **Principal eigenvalue** | Smallest Dirichlet eigenvalue $\lambda_0$ of the generator |
+| **Feynman-Kac bound** | $\mathbb{P}(\sup\text{DD}>\mathcal D_{max})\le Ce^{-\lambda_0 T}$ |
+| **Volume-normalised Ricci flow** | Ricci flow with a term holding volume fixed, converging to constant curvature |
+| **Betti-Number Divergence Test** | Crash diagnostic: raw $b_0\to1$ vs detoned $b_0>1$ |
+| **Detoning** | Removing dominant market/systemic eigenmodes from a correlation matrix |

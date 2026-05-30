@@ -291,6 +291,134 @@ def optimize_topological_risk_parity(
     return weights
 
 
+def _detone(returns: np.ndarray, n_factors: int = 1) -> np.ndarray:
+    """
+    Remove the top ``n_factors`` market/systemic modes from the return matrix
+    (correlation detoning à la Lopez de Prado). This is what lets a topological
+    method "see through" systemic contagion: when a crash forces one dominant
+    eigenvalue (the market mode), stripping it exposes the residual idiosyncratic
+    structure that keeps assets topologically separated.
+    """
+    returns = as_array(returns)
+    x = returns - returns.mean(axis=0, keepdims=True)
+    std = x.std(axis=0, keepdims=True)
+    std[std == 0] = 1.0
+    z = x / std
+    corr = np.corrcoef(z, rowvar=False)
+    corr = np.nan_to_num(corr, nan=0.0)
+    vals, vecs = np.linalg.eigh(corr)
+    order = np.argsort(vals)[::-1]
+    vals, vecs = vals[order], vecs[:, order]
+    # project residual onto factors beyond the top n_factors
+    keep = vecs[:, n_factors:]
+    residual = z @ keep @ keep.T
+    return residual
+
+
+def rolling_betti0(
+    returns,
+    window: int,
+    radius_quantile: float = 0.3,
+    step: int = 1,
+    fixed_radius: Optional[float] = None,
+) -> np.ndarray:
+    """
+    Rolling $b_0$ (number of connected components / clusters) of the asset
+    correlation manifold.
+
+    If ``fixed_radius`` is given it is held constant across all windows (the
+    correct setting for crash detection: a systemic spike in correlation shrinks
+    distances below a *fixed* threshold and collapses $b_0\\to 1$). Otherwise a
+    per-window distance quantile is used.
+    """
+    returns = as_array(returns)
+    t, n = returns.shape
+    out: List[int] = []
+    for start in range(0, max(t - window + 1, 0), step):
+        win = returns[start : start + window]
+        dist = correlation_distance_matrix(win)
+        if fixed_radius is not None:
+            radius = float(fixed_radius)
+        else:
+            finite = dist[np.triu_indices(n, k=1)]
+            radius = float(np.quantile(finite, radius_quantile)) if finite.size else 0.0
+        betti = betti_numbers_at(dist, radius, max_dim=0)
+        out.append(betti[0])
+    return np.array(out, dtype=int)
+
+
+def _calibrate_radius(returns: np.ndarray, window: int, radius_quantile: float) -> float:
+    """Calibrate a fixed linkage radius from the first (calm) reference window."""
+    returns = as_array(returns)
+    n = returns.shape[1]
+    win = returns[:window]
+    dist = correlation_distance_matrix(win)
+    finite = dist[np.triu_indices(n, k=1)]
+    return float(np.quantile(finite, radius_quantile)) if finite.size else 0.0
+
+
+@dataclasses.dataclass(frozen=True)
+class BettiDivergenceReport:
+    baseline_b0: np.ndarray
+    trp_b0: np.ndarray
+    crash_index: Optional[int]
+    baseline_collapsed: bool
+    trp_maintained_separation: bool
+
+
+def betti_number_divergence_test(
+    tensor_data,
+    window: int,
+    radius_quantile: float = 0.3,
+    n_market_factors: int = 1,
+    step: int = 1,
+    crash_index: Optional[int] = None,
+) -> BettiDivergenceReport:
+    r"""
+    Betti-Number Divergence Test — proves *topologically* why convex/correlation
+    optimization is blind to non-linear crashes.
+
+    Compares the rolling $b_0$ of:
+
+    - **baseline** (raw correlation manifold, what convex/HRP methods see), and
+    - **TRP** (market-mode-removed / detoned manifold).
+
+    During a systemic crash the baseline manifold collapses ($b_0 \to 1$: one
+    fully-correlated blob), whereas the detoned TRP manifold retains topological
+    separation ($b_0 > 1$).
+
+    Returns a report with both $b_0$ trajectories and boolean verdicts:
+    ``baseline_collapsed`` (baseline hit $b_0=1$) and
+    ``trp_maintained_separation`` (TRP stayed $b_0>1$ throughout).
+    """
+    returns = as_array(tensor_data)
+    # Calibrate each stream's linkage radius from its own calm reference window,
+    # then hold it fixed — a systemic crash then shows up as a collapse in b0.
+    base_radius = _calibrate_radius(returns, window, radius_quantile)
+    baseline_b0 = rolling_betti0(returns, window, step=step, fixed_radius=base_radius)
+    detoned = _detone(returns, n_factors=n_market_factors)
+    trp_radius = _calibrate_radius(detoned, window, radius_quantile)
+    trp_b0 = rolling_betti0(detoned, window, step=step, fixed_radius=trp_radius)
+
+    baseline_collapsed = bool(np.any(baseline_b0 <= 1))
+    trp_maintained = bool(np.all(trp_b0 > 1))
+
+    logger.info(
+        "[BETTI-DIVERGENCE] baseline min b0=%d (collapsed=%s) | TRP min b0=%d (separated=%s)",
+        int(baseline_b0.min()) if baseline_b0.size else -1,
+        baseline_collapsed,
+        int(trp_b0.min()) if trp_b0.size else -1,
+        trp_maintained,
+    )
+    return BettiDivergenceReport(
+        baseline_b0=baseline_b0,
+        trp_b0=trp_b0,
+        crash_index=crash_index,
+        baseline_collapsed=baseline_collapsed,
+        trp_maintained_separation=trp_maintained,
+    )
+
+
 def topological_risk_parity_report(
     tensor_data,
     max_homology_dimension: int = 2,
