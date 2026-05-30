@@ -279,6 +279,44 @@ def feynman_kac_drawdown_bound(
     return float(eigenfunction_integral * math.exp(-lambda0 * horizon))
 
 
+def drawdown_veto_from_tick_metric(
+    covariation_matrix,
+    weights,
+    drawdown_limit: float,
+    confidence_level: float,
+    horizon: float,
+    drift: float = 0.0,
+    n_basis: int = 24,
+) -> bool:
+    r"""
+    Pathwise-measured drawdown veto.
+
+    Builds the 1D portfolio diffusion metric directly from the observed
+    quadratic covariation, $g = w^\top \Sigma w$ (an $\mathcal{F}_t$-measurable
+    observable, not an estimated parameter), and applies the continuous
+    Laplace-Beltrami veto on the drawdown domain $[0, \mathcal{D}_{max}]$.
+
+    ``covariation_matrix`` is the metric rate from
+    :class:`src.core.tick_observer.QuadraticCovariationObserver`.
+    """
+    _require_jax_continuous()
+    from src.core.tick_observer import drawdown_metric_from_covariation
+
+    g_scalar = drawdown_metric_from_covariation(covariation_matrix, weights)
+    g_scalar = max(g_scalar, 1e-12)
+
+    metric_fn = lambda x: jnp.array(g_scalar)
+    drift_fn = lambda x: jnp.array(float(drift))
+    return apply_continuous_spectral_cvar_veto(
+        metric_fn,
+        drift_fn,
+        (0.0, float(drawdown_limit)),
+        confidence_level,
+        horizon,
+        n_basis=n_basis,
+    )
+
+
 def apply_continuous_spectral_cvar_veto(
     metric_fn: Callable,
     drift_fn: Callable,

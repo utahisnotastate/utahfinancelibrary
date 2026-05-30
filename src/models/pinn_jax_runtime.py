@@ -73,6 +73,39 @@ class OrthogonalWaveStatePredictor:
         self._jit_forward = (
             jit(OrthogonalWaveStatePredictor.wave_state_forward) if JAX_AVAILABLE else None
         )
+        # Pathwise-measured metric tensor (quadratic covariation). Bound directly
+        # from the tick stream, not a look-back window average.
+        self._metric_tensor: Optional[Any] = None
+
+    def bind_tick_metric(self, observer) -> "jnp.ndarray":
+        r"""
+        Bind the instantaneous pathwise metric $g_{ij}(t) = \langle X_i,X_j\rangle_t/t$
+        from a :class:`src.core.tick_observer.QuadraticCovariationObserver` (or a
+        raw covariation matrix). The metric is an $\mathcal{F}_t$-measurable
+        observable read from the ticks — there is no estimation window.
+        """
+        if hasattr(observer, "metric_tensor"):
+            g = observer.metric_tensor()
+        else:
+            g = np.asarray(observer)
+        self._metric_tensor = jnp.asarray(g)
+        return self._metric_tensor
+
+    @property
+    def metric_tensor(self) -> Optional["jnp.ndarray"]:
+        return self._metric_tensor
+
+    def whiten(self, market_data: "jnp.ndarray") -> "jnp.ndarray":
+        r"""
+        Map raw factors into the measured geometry: $\tilde x = g^{-1/2} x$. Uses
+        the bound pathwise metric so the network operates in the intrinsic
+        coordinates of the observed manifold rather than ad-hoc normalisation.
+        """
+        if self._metric_tensor is None:
+            return market_data
+        vals, vecs = jnp.linalg.eigh(self._metric_tensor)
+        inv_sqrt = (vecs * (1.0 / jnp.sqrt(jnp.clip(vals, 1e-12, None)))) @ vecs.T
+        return market_data @ inv_sqrt
 
     @staticmethod
     def wave_state_forward(

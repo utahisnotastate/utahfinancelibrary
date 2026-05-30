@@ -78,7 +78,7 @@ def compute_ricci_flow_covariance(
     manifold_dimension: int,
     n_steps: int = 200,
     preserve_trace: bool = True,
-    require_jax: bool = False,
+    require_jax: bool = True,
 ) -> np.ndarray:
     """
     Evolve the empirical covariance metric under normalised Ricci flow until the
@@ -99,8 +99,10 @@ def compute_ricci_flow_covariance(
     preserve_trace : bool
         If True, rescale after each step to hold the trace (total variance) fixed.
     require_jax : bool
-        If True, refuse to run without JAX (mandate exact tensor calculus and
-        machine-precision linear algebra; no NumPy fallback).
+        Default True. Refuse to run without JAX — mandate exact tensor calculus
+        and machine-precision linear algebra; the NumPy finite-difference
+        fallback is forbidden because O(h^2) errors corrupt the non-linear Ricci
+        flow PDE. Set False only for offline experiments without JAX.
 
     Returns
     -------

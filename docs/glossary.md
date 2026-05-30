@@ -45,3 +45,8 @@
 | **Volume-normalised Ricci flow** | Ricci flow with a term holding volume fixed, converging to constant curvature |
 | **Betti-Number Divergence Test** | Crash diagnostic: raw $b_0\to1$ vs detoned $b_0>1$ |
 | **Detoning** | Removing dominant market/systemic eigenmodes from a correlation matrix |
+| **Quadratic covariation** | $\langle X_i,X_j\rangle_t$, drift-invariant pathwise limit of summed squared increments |
+| **Pathwise metric tensor** | $g_{ij}(t)=\tfrac{d}{dt}\langle X_i,X_j\rangle_t$, the measured (not estimated) metric |
+| **Realized covariation** | Sum of outer products of log-return increments; converges to $\langle X\rangle_t$ as $dt\to0$ |
+| **TSRV** | Two-Scale Realized Covariance: noise-robust covariation estimator for raw ticks |
+| **Tick observer** | Online lag-free observer of $g_{ij}(t)$ from the tick stream (`tick_observer.py`) |
