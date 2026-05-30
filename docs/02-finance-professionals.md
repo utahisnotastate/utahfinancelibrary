@@ -13,7 +13,8 @@ The Utah Finance Library is an open-source alternative that automates:
 2. **Global netting** — routes liquidity in disjoint batches to reduce overlap  
 3. **Programmatic settlement** — splits every harvest at execution time  
 4. **Adelic bypass** — verifies trades for atomic settlement without modeled CCP margin (when solvency proofs pass)  
-5. **Physics-informed alpha** — JAX PINN layer instead of opaque black-box ML
+5. **Physics-informed alpha** — JAX PINN layer instead of opaque black-box ML  
+6. **Continuous-time geometry** — measures the market's metric tensor from ticks and bounds drawdown spectrally, instead of estimating stale covariance windows
 
 ## Problem 1: Cross-venue capital leakage
 
@@ -89,21 +90,44 @@ python -m src.app.hasse_minkowski_daemon
 
 Review `migration_intents`, `adelic_clearing`, and `alpha_signal` in the JSON output.
 
+## Problem 5: Static covariance estimated on stale windows
+
+**Legacy workflow:** A look-back window estimates a covariance matrix, which is
+then shrunk (Ledoit-Wolf/OAS) and fed to a convex solver. The estimate lags the
+market and carries window-length judgement and estimation error.
+
+**Utah workflow:** the [Continuous-Time Topological Allocation](08-continuous-time-allocation.md)
+suite **measures** the market's geometry instead of modelling it:
+
+- `QuadraticCovariationObserver` reads the pathwise metric tensor
+  `g_ij(t) = d/dt ⟨X_i, X_j⟩_t` directly from the tick stream — **no look-back
+  window, no lag** — with a two-scale (TSRV) estimator for microstructure noise.
+- `compute_ricci_flow_covariance` denoises that metric with an **exact-autodiff**
+  normalized Ricci flow (`jax.jacfwd`, no finite-difference proxy).
+- `feynman_kac_drawdown_bound` turns the Laplace-Beltrami principal eigenvalue
+  into an analytic drawdown supremum `P(sup DD > D_max) ≤ C e^{-λ₀T}`.
+- `betti_number_divergence_test` flags contagion topology: during a synthetic
+  crash the raw correlation manifold collapses (`b₀ → 1`) while the detoned
+  topological-risk-parity manifold keeps its clusters separated.
+
 ## Migrating from `riskfolio-lib`
 
-The [Continuous-Time Topological Allocation](08-continuous-time-allocation.md)
-module offers geometric counterparts to common `riskfolio-lib` workflows:
+The continuous-time suite offers geometric counterparts to common
+`riskfolio-lib` workflows:
 
 | riskfolio-lib | Utah equivalent |
 |---------------|-----------------|
 | `HCPortfolio` (HRP/NCO) | `optimize_topological_risk_parity` |
-| Ledoit-Wolf / OAS shrinkage | `compute_ricci_flow_covariance` |
+| Ledoit-Wolf / OAS shrinkage | `compute_ricci_flow_covariance` (exact-autodiff) |
+| Sample/EWMA covariance | `QuadraticCovariationObserver` (pathwise, zero-lag) |
 | L1 turnover constraint | `calculate_navier_stokes_rebalance_flow` |
-| Mean-CVaR / EVaR / Max-DD | `apply_spectral_cvar_veto` |
+| Mean-CVaR / EVaR / Max-DD | `apply_spectral_cvar_veto`, `feynman_kac_drawdown_bound` |
 
-These are research-grade building blocks; validate against your existing convex
-baselines before reallocating capital. They complement — not blindly replace —
-proven methods.
+The geometry is exact (validated on the 2-sphere to `1e-5`) and the pathwise
+metric is an `F_t`-measurable observable, not an estimated parameter. Where real
+exchange ticks carry microstructure noise, the two-scale estimator removes the
+leading bias. As with any new method, validate against your existing convex
+baselines before reallocating capital.
 
 ## Migration path from Bloomberg / Enfusion
 

@@ -49,6 +49,23 @@ Funds that free hundreds of millions from dead margin can deploy that capital in
 
 > Before using this with real counterparties, involve your lawyers and prime broker. Regulations still apply.
 
+## Measuring risk, not guessing it
+
+Most risk systems **estimate** how your assets move together using last month's
+data, then guess what might happen next. That estimate is always a little stale.
+
+This library takes a different approach: it **measures** the live "shape" of the
+market directly from price ticks, the way a thermometer reads temperature rather
+than predicting it. From that measured shape it computes a **mathematical ceiling
+on how bad a drawdown can get** over a chosen horizon, and it can flag when the
+market's structure is starting to collapse into a single contagion blob (the
+warning sign before a crash spreads).
+
+In plain terms: fewer stale guesses, an explicit "how bad can it get" number, and
+an early-warning light for systemic stress. It is advanced mathematics, but the
+output is a simple guardrail your team can act on. (As always: validate against
+your existing risk process before trusting any single number with real capital.)
+
 ## What you need to run it
 
 - A standard cloud server (AWS, DigitalOcean, private rack)  

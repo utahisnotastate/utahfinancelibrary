@@ -21,9 +21,13 @@ Part of the broader [utahisnotastate](https://github.com/utahisnotastate) ecosys
 | **Adelic bypass** | Hasse-Minkowski local-global verification → zero modeled clearing margin |
 | **Wave PINN** | JAX physics-informed alpha (`OrthogonalWaveStatePredictor`) |
 | **Topological Risk Parity** | Persistent-homology allocation (`optimize_topological_risk_parity`) |
-| **Ricci flow covariance** | Geometric covariance denoising (`compute_ricci_flow_covariance`) |
+| **Ricci flow covariance** | Exact `jax.jacfwd` geometric denoising (`compute_ricci_flow_covariance`) |
+| **Exact curvature (autodiff)** | Christoffel / Riemann / Ricci to machine precision (`riemannian_geometry`) |
+| **Pathwise metric observer** | Quadratic-covariation tick observer, zero-lag (`QuadraticCovariationObserver`) |
 | **Navier-Stokes routing** | Mass-conserving rebalance flow (`calculate_navier_stokes_rebalance_flow`) |
 | **Spectral CVaR veto** | Analytic drawdown wall (`apply_spectral_cvar_veto`) |
+| **Laplace-Beltrami drawdown bound** | Feynman-Kac spectral supremum (`feynman_kac_drawdown_bound`) |
+| **Betti divergence test** | Crash-topology contagion diagnostic (`betti_number_divergence_test`) |
 | **Verification lattice** | Navier alignment, adelic sieve bounds, omnibus audit |
 | **Sovereign vault** | Threshold-signed intent custody |
 
@@ -57,7 +61,12 @@ pytest -q
 python -m src.app.utah_prime_sieve_daemon
 ```
 
-### Optional JAX alpha
+### Optional JAX alpha + exact geometry
+
+JAX powers both the PINN alpha engine and the **exact-autodiff** continuous-time
+geometry (Ricci-flow denoising, Christoffel/Riemann/Ricci tensors, Laplace-Beltrami
+drawdown bound). These paths are JAX-mandatory by design — there is no
+finite-difference fallback (`O(h^2)` truncation corrupts the non-linear flow).
 
 ```bash
 pip install -e ".[jax,dev]"
@@ -80,7 +89,8 @@ Full guides for every audience live in **[`docs/`](docs/README.md)**:
 | [05-settlement-governance.md](docs/05-settlement-governance.md) | Ops & compliance |
 | [06-adelic-clearinghouse-bypass.md](docs/06-adelic-clearinghouse-bypass.md) | Adelic settlement deep dive |
 | [07-wave-pinn-alpha-engine.md](docs/07-wave-pinn-alpha-engine.md) | PINN / JAX alpha |
-| [08-continuous-time-allocation.md](docs/08-continuous-time-allocation.md) | TRP, Ricci flow, NS routing, spectral CVaR |
+| [08-continuous-time-allocation.md](docs/08-continuous-time-allocation.md) | TRP, Ricci flow, NS routing, spectral CVaR, tick observer |
+| [09_Ricci_Flow_Stabilization.tex](docs/09_Ricci_Flow_Stabilization.tex) | Curvature-uniformization denoiser theorem (LaTeX) |
 | [glossary.md](docs/glossary.md) | Terminology |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | System overview & diagrams |
 

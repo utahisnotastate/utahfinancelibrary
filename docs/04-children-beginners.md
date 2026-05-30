@@ -39,6 +39,24 @@ Old guessing games memorize yesterday’s weather and assume tomorrow is the sam
 
 Our robot’s brain uses **physics waves**—like ripples in a pond—to make steadier guesses. It also has a rule that says: **“Don’t get too wild when things get scary.”** That helps on stormy market days.
 
+## The shape detective (market geometry)
+
+Imagine the stock market is a giant trampoline. When things are calm, the
+trampoline is smooth. When something scary happens, it gets **bumpy and curvy**.
+
+Our robot is a **shape detective**. Instead of guessing tomorrow's weather from
+an old photo, it **feels the bumps right now** by watching prices wiggle. From
+how curvy the trampoline is, it figures out:
+
+- **"How big could a fall be?"** — like knowing how deep a dip in the trampoline
+  goes before you jump.  
+- **"Is everything clumping together?"** — when all the toys roll into one pile,
+  that is a warning that a storm might be coming.
+
+The detective also has a magic eraser called **Ricci flow** that smooths away
+tiny meaningless jiggles, so it only pays attention to the **real** bumps. Cool,
+right? It is like cleaning a foggy window so you can see clearly.
+
 ## Instant trade fairy (Adelic bypass)
 
 Usually when two people trade something big, a **referee** holds treasure from both sides until everyone promises the trade is fair. The treasure just **sits there**, doing nothing.
