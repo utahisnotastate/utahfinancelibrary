@@ -11,13 +11,17 @@ spectrum is uniformised — i.e. micro-structure noise (the dispersed eigenvalue
 shoulder of random-matrix theory) is dissipated while the dominant non-linear
 signal directions are preserved.
 
-For an SPD matrix we realise the flow in the eigenbasis: the curvature proxy is
-the deviation of each (log) eigenvalue from the mean log-eigenvalue, and the
-flow contracts that deviation while preserving the trace (volume). This is a
-well-posed, continuously differentiable ODE whose closed form we integrate with
-adaptive explicit Euler steps.
+The primary API ``compute_ricci_flow_covariance`` is a **direct bridge to the
+exact autodiff metric-field flow** (``ricci_flow_metric_field``). It builds a
+curved Riemannian metric *field* whose curvature is induced by the empirical
+covariance (a constant matrix is flat — Ricci flow only acts once the metric
+varies in space), integrates the volume-normalised Ricci flow with Christoffel
+symbols / Ricci tensor obtained by ``jax.jacfwd`` to machine precision, and
+contracts the spectrum by the *measured* curvature-uniformization ratio. There
+is **no NumPy finite-difference proxy in the API path** — discrete `O(h^2)`
+tensor calculus is forbidden because it corrupts the non-linear flow PDE.
 
-Backend: NumPy (JAX optional).
+Backend: JAX mandatory for the flow (exact tensor calculus).
 """
 
 from __future__ import annotations
@@ -57,12 +61,14 @@ def _nearest_spd(m: np.ndarray, eps: float = 1e-10) -> np.ndarray:
 
 def ricci_curvature_proxy(metric: np.ndarray) -> np.ndarray:
     """
-    Spectral Ricci-curvature proxy $R_{ij}$ for an SPD metric.
+    Spectral Ricci-curvature **diagnostic** (standalone; NOT used by the flow API).
 
-    In the eigenbasis the Ricci tensor is diagonal with entries proportional to
-    the deviation of each log-eigenvalue from the mean log-eigenvalue (constant
-    curvature ⇔ all eigenvalues equal ⇔ zero proxy). This recovers the standard
-    "evolve toward constant curvature" target while staying SPD-stable.
+    In the eigenbasis this analytic surrogate is diagonal with entries
+    proportional to the deviation of each log-eigenvalue from the mean
+    log-eigenvalue (constant curvature ⇔ all eigenvalues equal). It is retained
+    only as a cheap closed-form diagnostic. The denoising API
+    (``compute_ricci_flow_covariance``) does **not** call it — it integrates the
+    exact autodiff metric-field flow instead.
     """
     metric = _nearest_spd(metric)
     vals, vecs = np.linalg.eigh(metric)
@@ -72,37 +78,88 @@ def ricci_curvature_proxy(metric: np.ndarray) -> np.ndarray:
     return (vecs * ricci_eigs) @ vecs.T
 
 
+def _anisotropic_conformal_family(eigenvalues) -> Tuple[Callable, "jnp.ndarray", int]:
+    r"""
+    Diagonal, conformally-curved metric field seeded by a covariance spectrum.
+
+        $$g(x) = \operatorname{diag}_i \exp\!\big(2(a_i + p_i\, r(x))\big),
+            \qquad r(x) = \tfrac12\lVert x\rVert^2,$$
+
+    with $a_i = \tfrac12\log\lambda_i$ (so $g(0) = \operatorname{diag}(\lambda)$)
+    and $p_i = +\tfrac1{2\lambda_i}$ (precision-seeded, so the induced curvature
+    reflects the spectral anisotropy). The normalised Ricci flow on $(a, p)$ —
+    integrated with exact ``jax.jacfwd`` curvature — drives this field toward
+    constant curvature. Returns ``(family, theta0, N)``.
+    """
+    _require_jax_strict()
+    lam = jnp.asarray(eigenvalues)
+    n = int(lam.shape[0])
+    a0 = 0.5 * jnp.log(lam)
+    p0 = 0.5 / lam
+    theta0 = jnp.concatenate([a0, p0])
+
+    def family(theta):
+        th = jnp.asarray(theta)
+        a = th[:n]
+        p = th[n:]
+
+        def metric_fn(x):
+            r = 0.5 * jnp.sum(x ** 2)
+            return jnp.diag(jnp.exp(2.0 * (a + p * r)))
+
+        return metric_fn
+
+    return family, theta0, n
+
+
+def _curvature_sample_cloud(n_dim: int, radius: float = 0.35, seed: int = 0) -> np.ndarray:
+    """Deterministic small point cloud at which curvature is sampled for the flow."""
+    rng = np.random.default_rng(seed)
+    n_pts = max(5, n_dim)
+    return rng.normal(scale=radius, size=(n_pts, n_dim))
+
+
 def compute_ricci_flow_covariance(
     empirical_metric_tensor,
     flow_duration: float,
     manifold_dimension: int,
-    n_steps: int = 200,
+    n_steps: int = 30,
     preserve_trace: bool = True,
     require_jax: bool = True,
 ) -> np.ndarray:
-    """
-    Evolve the empirical covariance metric under normalised Ricci flow until the
-    scalar curvature is (near-)uniform, yielding a denoised non-linear dependency
-    tensor.
+    r"""
+    Denoise a covariance by the **exact autodiff** normalised Ricci flow.
+
+    This is a direct bridge to ``ricci_flow_metric_field``: a curved metric field
+    is built from the covariance spectrum (:func:`_anisotropic_conformal_family`),
+    the volume-normalised Ricci flow is integrated with Christoffel/Ricci tensors
+    from ``jax.jacfwd`` (no finite differences), and the spectrum is contracted
+    toward its bulk mean by the **measured curvature-uniformization ratio**
+
+        $$\gamma = \frac{\operatorname{std}_x R(T)}{\operatorname{std}_x R(0)}
+            \in [0, 1],\qquad
+          \log\lambda_i^{\text{denoised}} = \overline{\log\lambda}
+            + \gamma\,(\log\lambda_i - \overline{\log\lambda}).$$
+
+    As the flow drives the scalar curvature to a constant ($\gamma \to 0$), the
+    spectrum collapses to the denoised constant-curvature manifold; at $T=0$
+    ($\gamma = 1$) the input is returned unchanged.
 
     Parameters
     ----------
     empirical_metric_tensor : array-like, shape (N, N)
         Empirical covariance / correlation (SPD). Accepts ``jax.Array``.
     flow_duration : float
-        Total integration time T. Larger T ⇒ stronger denoising (full collapse
-        to constant curvature in the limit).
+        Total integration time T. Larger T ⇒ stronger denoising.
     manifold_dimension : int
-        Dimension m used in the volume-normalisation term.
+        Retained for API compatibility; the flow uses the metric dimension N.
     n_steps : int
-        Number of explicit Euler sub-steps.
+        Number of normalised-flow sub-steps.
     preserve_trace : bool
-        If True, rescale after each step to hold the trace (total variance) fixed.
+        If True, rescale the output to hold the trace (total variance) fixed.
     require_jax : bool
-        Default True. Refuse to run without JAX — mandate exact tensor calculus
-        and machine-precision linear algebra; the NumPy finite-difference
-        fallback is forbidden because O(h^2) errors corrupt the non-linear Ricci
-        flow PDE. Set False only for offline experiments without JAX.
+        Default True. The exact autodiff flow is mandatory; there is no NumPy
+        finite-difference fallback (O(h^2) corrupts the non-linear Ricci PDE).
 
     Returns
     -------
@@ -115,34 +172,47 @@ def compute_ricci_flow_covariance(
             "pip install -e '.[jax]'. NumPy finite-difference tensor calculus is "
             "forbidden in strict mode."
         )
-    g = _nearest_spd(as_array(empirical_metric_tensor))
-    if g.ndim != 2 or g.shape[0] != g.shape[1]:
+    _require_jax_strict()
+
+    raw = as_array(empirical_metric_tensor)
+    if raw.ndim != 2 or raw.shape[0] != raw.shape[1]:
         raise ValueError("empirical_metric_tensor must be square (N, N)")
     if flow_duration <= 0:
-        return g
-    m = max(int(manifold_dimension), 1)
-    dt = flow_duration / max(n_steps, 1)
-    target_trace = float(np.trace(g))
+        return _symmetrize(np.asarray(raw, dtype=float))
 
-    for _ in range(n_steps):
-        ricci = ricci_curvature_proxy(g)
-        scalar_r = float(np.trace(ricci))
-        # dg/dt = -2 Ric + (2/m) r g   (volume-normalised)
-        dg = -2.0 * ricci + (2.0 / m) * (scalar_r / max(g.shape[0], 1)) * g
-        g = _symmetrize(g + dt * dg)
-        g = _nearest_spd(g)
-        if preserve_trace and np.trace(g) > 0:
-            g *= target_trace / float(np.trace(g))
+    g_in = _nearest_spd(raw)
+    vals, vecs = np.linalg.eigh(g_in)
+    vals = np.clip(vals, 1e-10, None)
 
-    vals = np.linalg.eigvalsh(g)
-    logger.info(
-        "[RICCI] flow T=%.3f m=%d cond=%.3e spread=%.4f",
-        flow_duration,
-        m,
-        float(vals.max() / max(vals.min(), 1e-12)),
-        float(np.std(np.log(np.clip(vals, 1e-12, None)))),
+    family, theta0, n = _anisotropic_conformal_family(vals)
+    xs = _curvature_sample_cloud(n)
+    _, history = ricci_flow_metric_field(
+        family, theta0, xs, float(flow_duration), n_steps=int(n_steps), max_step=0.05
     )
-    return g
+
+    disp0 = max(float(history[0]), 1e-12)
+    gamma = float(np.clip(history[-1] / disp0, 0.0, 1.0))
+
+    log_vals = np.log(vals)
+    mean_log = float(np.mean(log_vals))
+    denoised = np.exp(mean_log + gamma * (log_vals - mean_log))
+
+    g_out = _nearest_spd((vecs * denoised) @ vecs.T)
+    if preserve_trace and np.trace(g_out) > 0:
+        g_out *= float(np.trace(g_in)) / float(np.trace(g_out))
+
+    out_eig = np.linalg.eigvalsh(g_out)
+    logger.info(
+        "[RICCI-AUTODIFF] T=%.3f N=%d gamma=%.4f curv-disp %.4f->%.4f spread %.4f->%.4f",
+        flow_duration,
+        n,
+        gamma,
+        float(history[0]),
+        float(history[-1]),
+        float(np.std(log_vals)),
+        float(np.std(np.log(np.clip(out_eig, 1e-12, None)))),
+    )
+    return g_out
 
 
 def ricci_flow_curvature_field(
@@ -152,18 +222,26 @@ def ricci_flow_curvature_field(
     samples: int = 8,
 ) -> Tuple[np.ndarray, np.ndarray]:
     """
-    Continuously-differentiable curvature trajectory for ``wave_theory_engine``.
+    Exact scalar-curvature-dispersion trajectory along the autodiff Ricci flow.
 
-    Returns the time grid and a stack of scalar-curvature values sampled along
-    the flow, so downstream signal models can ingest a dynamic curvature tensor
-    rather than a single static matrix.
+    Runs a single exact metric-field flow and returns the time grid together with
+    the (autodiff-measured) scalar-curvature dispersion resampled onto it, so
+    downstream signal models can ingest a dynamic, continuously-uniformizing
+    curvature signal rather than a single static matrix.
     """
+    _require_jax_strict()
     g = _nearest_spd(as_array(empirical_metric_tensor))
+    vals, _ = np.linalg.eigh(g)
+    vals = np.clip(vals, 1e-10, None)
+    family, theta0, n = _anisotropic_conformal_family(vals)
+    xs = _curvature_sample_cloud(n)
+    n_steps = max(int(samples) - 1, 1) * 4
+    _, history = ricci_flow_metric_field(
+        family, theta0, xs, float(flow_duration), n_steps=n_steps, max_step=0.05
+    )
     times = np.linspace(0.0, flow_duration, samples)
-    scalars = np.empty(samples, dtype=float)
-    for k, t in enumerate(times):
-        gt = compute_ricci_flow_covariance(g, float(t), manifold_dimension)
-        scalars[k] = float(np.trace(ricci_curvature_proxy(gt)))
+    src_t = np.linspace(0.0, flow_duration, len(history))
+    scalars = np.interp(times, src_t, np.asarray(history, dtype=float))
     return times, scalars
 
 

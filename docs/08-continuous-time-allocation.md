@@ -151,12 +151,26 @@ print(report.betti_numbers, report.barcode_wasserstein, report.filtration_radius
 
 ## 2. Ricci Flow Covariance
 
-Treats covariance as a metric $g_{ij}$ and integrates volume-normalised Ricci flow
+Integrates the volume-normalised Ricci flow
 
 $$\frac{\partial g_{ij}}{\partial t} = -2R_{ij} + \tfrac{2}{m} r\, g_{ij}$$
 
-in the eigenbasis, contracting the dispersion of log-eigenvalues (RMT noise)
-toward constant curvature while preserving the trace (total variance).
+as a **direct bridge to the exact autodiff metric-field flow** — no NumPy
+finite-difference proxy is in the path. A constant covariance matrix is a *flat*
+metric (zero Ricci), so the API first builds a curved Riemannian metric *field*
+whose curvature is induced by the covariance spectrum, then integrates the flow
+with Christoffel symbols and the Ricci tensor obtained from `jax.jacfwd` to
+machine precision. The spectrum is contracted toward its bulk mean by the
+**measured curvature-uniformization ratio**
+
+$$\gamma = \frac{\operatorname{std}_x R(T)}{\operatorname{std}_x R(0)} \in [0,1],
+\qquad \log\lambda_i^{\text{den}} = \overline{\log\lambda} + \gamma\,(\log\lambda_i - \overline{\log\lambda}),$$
+
+so the contraction is governed by the exact geometry of the flow ($\gamma \to 0$
+as the scalar curvature becomes constant), not by a discrete surrogate. Trace
+(total variance) is preserved. A `ricci_curvature_proxy` remains as a standalone
+spectral diagnostic but is **never** invoked by the denoiser (enforced in
+`tests/test_ricci_flow_autodiff.py::test_api_does_not_call_numpy_proxy`).
 
 ```python
 from src.models.manifold_kernel import compute_ricci_flow_covariance
@@ -168,15 +182,17 @@ denoised = compute_ricci_flow_covariance(
 )
 ```
 
-A dynamic curvature trajectory for `wave_theory_engine`:
+The exact (autodiff-measured) scalar-curvature-dispersion trajectory for
+`wave_theory_engine`:
 
 ```python
 from src.models.manifold_kernel import ricci_flow_curvature_field
-times, scalar_curvature = ricci_flow_curvature_field(cov, 1.0, cov.shape[0], samples=8)
+times, curv_dispersion = ricci_flow_curvature_field(cov, 1.0, cov.shape[0], samples=8)
 ```
 
-Empirically the flow **lowers the condition number** (denoising) while keeping
-SPD structure — see `tests/test_manifold_kernel.py`.
+Empirically the flow **contracts the eigenvalue spread** (denoising) while
+keeping SPD structure and trace — see `tests/test_manifold_kernel.py` and
+`tests/test_ricci_flow_autodiff.py`.
 
 ---
 
@@ -282,12 +298,15 @@ R = scalar_curvature(sphere_metric, jnp.array([0.9, 0.2]))  # -> 0.5 == 2/r^2
 
 ### Autodiff metric-field Ricci flow
 
-`compute_ricci_flow_covariance(..., require_jax=True)` enforces JAX. For a genuine
-curved manifold, `ricci_flow_metric_field` integrates the **volume-normalised**
-flow $\partial_t g = -2(\mathrm{Ric} - \tfrac{\bar r}{m} g)$ by Galerkin
-projection onto a conformal family seeded by the covariance
-(`gaussian_conformal_metric_family`). In the stable regime it provably reduces
-the dispersion of scalar curvature (uniformisation / denoising).
+`compute_ricci_flow_covariance` **is** this flow — the primary denoising API is a
+direct bridge to `ricci_flow_metric_field`, with no NumPy proxy in the path. It
+integrates the **volume-normalised** flow $\partial_t g = -2(\mathrm{Ric} -
+\tfrac{\bar r}{m} g)$ by Galerkin projection onto a curved metric family seeded
+by the covariance spectrum (`_anisotropic_conformal_family`; the 2-D conformal
+`gaussian_conformal_metric_family` is also available). The Ricci tensor at every
+sample point is `jax.jacfwd`-exact, the flow reduces the scalar-curvature
+dispersion (uniformisation), and that measured ratio drives the spectral
+contraction (denoising) — trace preserved, SPD guaranteed.
 
 ## 6. Continuous Laplace-Beltrami drawdown bound
 

@@ -19,6 +19,42 @@ def test_require_jax_flag_enforced_when_missing():
 
 
 @pytest.mark.skipif(not JAX, reason="JAX required for autodiff metric-field flow")
+def test_api_does_not_call_numpy_proxy():
+    """The denoising API must route through exact autodiff, never the proxy."""
+    import src.models.manifold_kernel as mk
+
+    cov = np.cov(np.random.default_rng(1).normal(size=(150, 5)), rowvar=False)
+
+    def _boom(_metric):
+        raise AssertionError("ricci_curvature_proxy must not be in the flow path")
+
+    original = mk.ricci_curvature_proxy
+    mk.ricci_curvature_proxy = _boom
+    try:
+        out = mk.compute_ricci_flow_covariance(cov, 1.0, 5)
+    finally:
+        mk.ricci_curvature_proxy = original
+    assert out.shape == cov.shape
+
+
+@pytest.mark.skipif(not JAX, reason="JAX required for autodiff metric-field flow")
+def test_autodiff_flow_denoises_strong_anisotropy():
+    """A spiked covariance is contracted toward its bulk (eigenvalue spread down)."""
+    rng = np.random.default_rng(7)
+    n = 5
+    spectrum = np.array([4.0, 1.2, 1.0, 0.9, 0.8]) + rng.normal(scale=0.2, size=n)
+    spectrum = np.clip(spectrum, 0.2, None)
+    q, _ = np.linalg.qr(rng.normal(size=(n, n)))
+    cov = (q * spectrum) @ q.T
+
+    before = np.std(np.log(np.linalg.eigvalsh(cov)))
+    flowed = compute_ricci_flow_covariance(cov, flow_duration=2.0, manifold_dimension=n)
+    after = np.std(np.log(np.linalg.eigvalsh(flowed)))
+    assert after < before  # strict denoising
+    assert np.isclose(np.trace(flowed), np.trace(cov), rtol=1e-6)
+
+
+@pytest.mark.skipif(not JAX, reason="JAX required for autodiff metric-field flow")
 def test_normalized_ricci_flow_uniformizes_curvature():
     import jax.numpy as jnp
     from src.models.manifold_kernel import (
