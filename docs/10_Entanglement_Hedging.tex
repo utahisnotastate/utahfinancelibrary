@@ -1,0 +1,91 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{geometry}
+\usepackage{hyperref}
+\geometry{margin=1in}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{remark}{Remark}
+
+\title{Tensor-Network Entanglement Diagnostics for Portfolio Diversification}
+\author{Utah Finance Library --- Continuous-Time Topological Allocation Suite}
+\date{}
+
+\begin{document}
+\maketitle
+
+\noindent
+This note documents the entanglement-entropy diversification diagnostics in
+\texttt{src/models/tensor\_network\_hedge.py}. The construction borrows the
+Matrix Product State (MPS) machinery of quantum many-body physics to quantify how
+broadly portfolio risk is distributed across independent modes.
+
+\section*{Theorem (as proposed)}
+
+\begin{theorem}[Entanglement-Bounded Diversification via Von Neumann Entropy]
+Let the $N$-asset phase space be described by a Hilbert space
+$\mathcal{H} = \bigotimes_{i=1}^N \mathcal{H}_i$. Approximate the portfolio state
+$|\Psi\rangle$ by a Matrix Product State of bond dimension $\chi$:
+\begin{equation}
+|\Psi\rangle = \sum_{\{s_i\}} \operatorname{Tr}\!\big(A^{s_1}_1 A^{s_2}_2 \cdots A^{s_N}_N\big)\,
+|s_1 s_2 \cdots s_N\rangle .
+\end{equation}
+Define the reduced density matrix of a subsystem $A$ by partial trace,
+$\rho_A = \operatorname{Tr}_{B}\,|\Psi\rangle\langle\Psi|$, with Von Neumann
+entropy $S(\rho_A) = -\operatorname{Tr}(\rho_A \log \rho_A)$.
+
+Then $S(\rho_A)$ is a bipartition-wise measure of how many independent risk
+directions couple subsystem $A$ to its complement: $S(\rho_A)=0$ iff the state
+factorizes across the cut (one mode, maximally fragile), and $S(\rho_A)$ is
+maximized by a uniform Schmidt spectrum (risk spread evenly across the cut).
+\end{theorem}
+
+\begin{proof}
+$\rho_A$ is positive semidefinite with unit trace, so its eigenvalues
+$\{\lambda_k\}$ (the squared Schmidt coefficients across the cut) form a
+probability vector and $S(\rho_A) = -\sum_k \lambda_k \log \lambda_k$. The
+entropy of a probability vector vanishes iff it is a point mass (a single Schmidt
+mode, i.e.\ a product state across the cut) and is maximized by the uniform
+distribution. The Schmidt coefficients are exactly the singular values of the
+reshaped amplitude matrix, which the implementation obtains by SVD. $\square$
+\end{proof}
+
+\section*{Implementation correspondence}
+
+\begin{itemize}
+\item \texttt{von\_neumann\_portfolio\_entropy} returns
+$S(\rho)$ for $\rho = \Sigma/\operatorname{tr}\Sigma$ (the spectral entropy of the
+normalised covariance); \texttt{effective\_number\_of\_bets} returns $e^{S}$.
+\item \texttt{bipartition\_entanglement\_entropy} computes $S(\rho_A)$ for a
+$2^N$ state vector via the Schmidt (SVD) decomposition; it returns $0$ for a
+product state and $\log 2$ for a Bell state (both verified in the tests).
+\item \texttt{mps\_decompose} performs the left-canonical sequential-SVD MPS
+factorization with bond-dimension truncation $\chi$ and reports the bond
+entropies.
+\end{itemize}
+
+\section*{Scope of the claim (honest framing)}
+
+\begin{remark}
+Entanglement / spectral entropy is a \emph{diversification and concentration}
+measure: it quantifies how broadly risk is distributed across independent modes,
+and flags when a single systemic factor dominates (low entropy, fragile). It is a
+robustness \emph{diagnostic}.
+\end{remark}
+
+\begin{remark}
+It does \textbf{not} provide ``deterministic hedging'' or ``topological
+immunity to covariance collapse''. No long-only or long-short allocation can
+guarantee that one asset rises whenever another falls; empirically, cross-asset
+correlations rise toward $1$ in a liquidity crisis (this is precisely the
+$b_0 \to 1$ collapse measured by the Betti-number divergence test in
+\texttt{src/core/topological\_allocation.py}). Maximizing $S(\rho_A)$ makes a
+portfolio \emph{less dominated} by a single collapsing mode; it does not abolish
+systemic risk. Validate any entropy-based allocation against your existing
+baselines before committing capital.
+\end{remark}
+
+\end{document}

@@ -34,6 +34,9 @@ Part of the broader [utahisnotastate](https://github.com/utahisnotastate) ecosys
 | **Spectral CVaR veto** | Analytic drawdown wall (`apply_spectral_cvar_veto`) |
 | **Laplace-Beltrami drawdown bound** | Feynman-Kac spectral supremum (`feynman_kac_drawdown_bound`) |
 | **Betti divergence test** | Crash-topology contagion diagnostic (`betti_number_divergence_test`) |
+| **Holographic LOB embedding** | AdS/CFT-style hyperbolic order-book pressure feature (`holographic_order_book_pressure`) |
+| **Tensor-network entropy** | MPS / Von Neumann diversification spectrum (`von_neumann_portfolio_entropy`) |
+| **Malliavin sensitivities** | Skorokhod / Malliavin Greeks & risk decomposition (`malliavin_delta_european_call`) |
 | **Verification lattice** | Navier alignment, adelic sieve bounds, omnibus audit |
 | **Sovereign vault** | Threshold-signed intent custody |
 
@@ -97,6 +100,7 @@ Full guides for every audience live in **[`docs/`](docs/README.md)**:
 | [07-wave-pinn-alpha-engine.md](docs/07-wave-pinn-alpha-engine.md) | PINN / JAX alpha |
 | [08-continuous-time-allocation.md](docs/08-continuous-time-allocation.md) | TRP, Ricci flow, NS routing, spectral CVaR, tick observer |
 | [09_Ricci_Flow_Stabilization.tex](docs/09_Ricci_Flow_Stabilization.tex) | Curvature-uniformization denoiser theorem (LaTeX) |
+| [10_Entanglement_Hedging.tex](docs/10_Entanglement_Hedging.tex) | Tensor-network entanglement diversification (LaTeX) |
 | [glossary.md](docs/glossary.md) | Terminology |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | System overview & diagrams |
 

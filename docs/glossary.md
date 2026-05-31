@@ -50,3 +50,10 @@
 | **Realized covariation** | Sum of outer products of log-return increments; converges to $\langle X\rangle_t$ as $dt\to0$ |
 | **TSRV** | Two-Scale Realized Covariance: noise-robust covariation estimator for raw ticks |
 | **Tick observer** | Online lag-free observer of $g_{ij}(t)$ from the tick stream (`tick_observer.py`) |
+| **Holographic LOB embedding** | AdS/CFT-style hyperbolic weighting of order-book depth into a bounded pressure feature |
+| **Von Neumann entropy** | $S(\rho)=-\operatorname{tr}(\rho\log\rho)$; here a diversification/concentration measure of normalised covariance |
+| **Effective number of bets** | $e^{S(\rho)}$, count of independent active risk directions |
+| **Matrix Product State (MPS)** | Tensor-network factorization of a state vector; bond entropies = entanglement across cuts |
+| **Malliavin derivative** | Sensitivity $D_t F$ of a path functional to noise perturbation; used for Greeks |
+| **Skorokhod integral** | Anticipating (non-adapted) stochastic integral; adjoint of the Malliavin derivative |
+| **Protocol yield split** | Transparent, configurable net/humanitarian/tithe routing of positive yield (`protocol_economics.py`) |

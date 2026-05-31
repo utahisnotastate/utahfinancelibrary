@@ -5,6 +5,19 @@ from src.models.manifold_kernel import (
     ricci_curvature_proxy,
     ricci_flow_curvature_field,
 )
+from src.models.holographic_projection import (
+    HolographicState,
+    holographic_alpha_with_split,
+    holographic_order_book_pressure,
+)
+from src.models.tensor_network_hedge import (
+    MPSDecomposition,
+    bipartition_entanglement_entropy,
+    effective_number_of_bets,
+    entanglement_diversification_weights,
+    mps_decompose,
+    von_neumann_portfolio_entropy,
+)
 
 if is_jax_available():
     from src.models.pinn_jax_runtime import OrthogonalWaveStatePredictor
@@ -37,4 +50,13 @@ __all__ = [
     "ricci_tensor",
     "riemann_tensor",
     "scalar_curvature",
+    "HolographicState",
+    "holographic_order_book_pressure",
+    "holographic_alpha_with_split",
+    "MPSDecomposition",
+    "mps_decompose",
+    "von_neumann_portfolio_entropy",
+    "effective_number_of_bets",
+    "bipartition_entanglement_entropy",
+    "entanglement_diversification_weights",
 ]

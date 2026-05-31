@@ -41,6 +41,14 @@ from src.core.topological_allocation import (
     topological_risk_parity_report,
 )
 from src.core.utah_verification_manifold import InvarianceValidationLattice
+from src.core.protocol_economics import YieldSplit, protocol_yield_split
+from src.core.chrono_drift import (
+    PathRiskDecomposition,
+    decompose_realized_path_risk,
+    malliavin_delta_european_call,
+    malliavin_derivative_terminal_gbm,
+    skorokhod_integral,
+)
 
 __all__ = [
     "AdelicClearinghouseEngine",
@@ -74,4 +82,11 @@ __all__ = [
     "two_scale_realized_covariance",
     "metric_field_from_covariation",
     "drawdown_metric_from_covariation",
+    "YieldSplit",
+    "protocol_yield_split",
+    "PathRiskDecomposition",
+    "decompose_realized_path_risk",
+    "malliavin_delta_european_call",
+    "malliavin_derivative_terminal_gbm",
+    "skorokhod_integral",
 ]

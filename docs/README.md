@@ -16,6 +16,7 @@ Welcome to the official documentation set for the Utah Finance Library. These gu
 | Advanced / SOTA | [Wave-State PINN Alpha Engine](07-wave-pinn-alpha-engine.md) | Physics-informed neural networks in JAX |
 | Advanced / SOTA | [Continuous-Time Topological Allocation](08-continuous-time-allocation.md) | TRP, exact-autodiff Ricci flow, pathwise tick metric, NS routing, Laplace-Beltrami drawdown |
 | Theory | [Ricci-Flow Spectral Stabilization](09_Ricci_Flow_Stabilization.tex) | Curvature-uniformization theorem for the autodiff denoiser (LaTeX) |
+| Theory | [Entanglement Hedging Diagnostics](10_Entanglement_Hedging.tex) | Tensor-network / Von Neumann entropy diversification (LaTeX) |
 | Everyone | [Glossary](glossary.md) | Terms used across the library |
 
 ## Quick commands
