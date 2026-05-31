@@ -3,6 +3,8 @@
 **Audience:** Operations, compliance, fund administrators  
 **Version:** 6.Omnibus_Adelic
 
+> **Languages:** English · [Eesti](et/05-settlement-governance.md) · [Русский](ru/05-settlement-governance.md)
+
 ## Purpose
 
 This document defines how the Utah Finance Library handles **programmatic capital distribution** at harvest time and which constants are **immutable** in code.

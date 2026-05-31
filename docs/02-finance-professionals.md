@@ -3,6 +3,8 @@
 **Audience:** Quantitative analysts, portfolio managers, execution traders, risk officers  
 **Version:** 6.Omnibus_Adelic
 
+> **Languages:** English · [Eesti](et/02-finance-professionals.md) · [Русский](ru/02-finance-professionals.md)
+
 ## Executive summary
 
 If your fund still pays seven-figure annual licenses for Bloomberg AIM, Enfusion, or Aladdin **and** locks hundreds of millions in clearing margin, you are bleeding alpha on two fronts: **software extraction** and **collateral drag**.

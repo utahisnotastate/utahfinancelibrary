@@ -86,7 +86,12 @@ python -m src.models.pinn_jax_runtime
 
 ## Documentation
 
-Full guides for every audience live in **[`docs/`](docs/README.md)**:
+**Languages:** English · [Eesti](docs/et/README.md) · [Русский](docs/ru/README.md)
+
+Full guides for every audience live in **[`docs/`](docs/README.md)**. Complete
+Estonian and Russian translations are kept in **completely separate files** under
+[`docs/et/`](docs/et/README.md) and [`docs/ru/`](docs/ru/README.md) (code, file
+paths, API names and math notation are identical across languages):
 
 | Guide | Audience |
 |-------|----------|

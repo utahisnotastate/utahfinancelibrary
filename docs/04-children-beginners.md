@@ -4,6 +4,8 @@
 **Version:** 6.Omnibus_Adelic  
 **Reading level:** Ages 8+
 
+> **Languages:** English · [Eesti](et/04-children-beginners.md) · [Русский](ru/04-children-beginners.md)
+
 ## Meet your money robot
 
 Imagine a **robot piggy bank** that is also a tiny mathematician. You put money in, and the robot figures out:

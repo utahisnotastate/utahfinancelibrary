@@ -3,6 +3,8 @@
 **Audience:** Quant researchers, portfolio engineers migrating from `riskfolio-lib`  
 **Version:** 6.Omnibus_Adelic
 
+> **Languages:** English · [Eesti](et/08-continuous-time-allocation.md) · [Русский](ru/08-continuous-time-allocation.md)
+
 This module set reframes portfolio optimization away from static quadratic
 programming on discrete covariance matrices toward **continuous-time geometry**:
 persistent homology, Ricci flow, fluid routing, and spectral risk bounds.

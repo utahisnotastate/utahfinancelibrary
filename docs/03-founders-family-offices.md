@@ -3,6 +3,8 @@
 **Audience:** Non-technical principals, family office leaders, fund founders  
 **Version:** 6.Omnibus_Adelic
 
+> **Languages:** English · [Eesti](et/03-founders-family-offices.md) · [Русский](ru/03-founders-family-offices.md)
+
 ## What is the Utah Finance Library?
 
 Think of it as an **open-source hedge fund in a box**: a set of programs that work together to track your money across banks and brokers, find waste, move capital efficiently, settle trades instantly when safe, and split profits automatically—including charitable giving.

@@ -3,6 +3,12 @@
 **Version 6.Omnibus_Adelic**  
 **Repository:** [github.com/utahisnotastate/utahfinancelibrary](https://github.com/utahisnotastate/utahfinancelibrary)
 
+> **Languages:** English · [Eesti](et/README.md) · [Русский](ru/README.md)
+>
+> Full Estonian and Russian translations live in completely separate files under
+> [`docs/et/`](et/README.md) and [`docs/ru/`](ru/README.md). Code, file paths, API
+> names and mathematical notation are kept identical across languages.
+
 Welcome to the official documentation set for the Utah Finance Library. These guides are written for different roles and experience levels. Start with the guide that matches who you are.
 
 | Audience | Guide | What you will learn |

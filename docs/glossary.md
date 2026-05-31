@@ -1,5 +1,7 @@
 # Glossary
 
+> **Languages:** English · [Eesti](et/glossary.md) · [Русский](ru/glossary.md)
+
 | Term | Definition |
 |------|------------|
 | **Adelic Clearinghouse Bypass** | Settlement path that verifies local-global solvency and allows zero modeled collateral when checks pass |

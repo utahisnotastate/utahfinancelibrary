@@ -3,6 +3,8 @@
 **Audience:** Software engineers, DevOps, system architects  
 **Version:** 6.Omnibus_Adelic
 
+> **Languages:** English · [Eesti](et/01-engineers-architects.md) · [Русский](ru/01-engineers-architects.md)
+
 ## Overview
 
 The Utah Finance Library is a **multi-module Python monorepo** that replaces monolithic fund stacks with deterministic, testable components:

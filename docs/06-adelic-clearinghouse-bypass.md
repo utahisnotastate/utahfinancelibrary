@@ -3,6 +3,8 @@
 **Audience:** Quant engineers, settlement architects, advanced readers  
 **Version:** 6.Omnibus_Adelic
 
+> **Languages:** English · [Eesti](et/06-adelic-clearinghouse-bypass.md) · [Русский](ru/06-adelic-clearinghouse-bypass.md)
+
 ## The problem
 
 Central counterparties (CCPs) and prime brokers require **margin** to guarantee T+1 settlement. At institutional scale this locks **hundreds of millions to billions** in low-yield collateral.
