@@ -41,7 +41,22 @@ from src.core.topological_allocation import (
     topological_risk_parity_report,
 )
 from src.core.utah_verification_manifold import InvarianceValidationLattice
-from src.core.protocol_economics import YieldSplit, protocol_yield_split
+from src.core.protocol_economics import (
+    YieldSplit,
+    enforce_universal_tithe,
+    protocol_yield_split,
+)
+from src.core.braid_router import (
+    ExecutionBraid,
+    braid_permutation,
+    crossing_number,
+    free_reduce,
+    jones_polynomial_value,
+    kauffman_bracket,
+    optimize_execution_braid,
+    ordering_impact_cost,
+    writhe,
+)
 from src.core.chrono_drift import (
     PathRiskDecomposition,
     decompose_realized_path_risk,
@@ -84,6 +99,16 @@ __all__ = [
     "drawdown_metric_from_covariation",
     "YieldSplit",
     "protocol_yield_split",
+    "enforce_universal_tithe",
+    "ExecutionBraid",
+    "optimize_execution_braid",
+    "ordering_impact_cost",
+    "kauffman_bracket",
+    "jones_polynomial_value",
+    "braid_permutation",
+    "free_reduce",
+    "crossing_number",
+    "writhe",
     "PathRiskDecomposition",
     "decompose_realized_path_risk",
     "malliavin_delta_european_call",

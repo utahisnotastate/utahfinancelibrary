@@ -37,6 +37,9 @@ Part of the broader [utahisnotastate](https://github.com/utahisnotastate) ecosys
 | **Holographic LOB embedding** | AdS/CFT-style hyperbolic order-book pressure feature (`holographic_order_book_pressure`) |
 | **Tensor-network entropy** | MPS / Von Neumann diversification spectrum (`von_neumann_portfolio_entropy`) |
 | **Malliavin sensitivities** | Skorokhod / Malliavin Greeks & risk decomposition (`malliavin_delta_european_call`) |
+| **Jarzynski free-energy** | Non-equilibrium free-energy + irreversibility estimator (`extract_fluctuation_arbitrage`) |
+| **Braid execution router** | Kauffman/Jones invariants + non-commutative ordering (`optimize_execution_braid`) |
+| **Koopman EDMD operator** | Spectral linearization & forecast in lifted space (`compute_koopman_edmd_prediction`) |
 | **Verification lattice** | Navier alignment, adelic sieve bounds, omnibus audit |
 | **Sovereign vault** | Threshold-signed intent custody |
 
@@ -106,6 +109,9 @@ paths, API names and math notation are identical across languages):
 | [08-continuous-time-allocation.md](docs/08-continuous-time-allocation.md) | TRP, Ricci flow, NS routing, spectral CVaR, tick observer |
 | [09_Ricci_Flow_Stabilization.tex](docs/09_Ricci_Flow_Stabilization.tex) | Curvature-uniformization denoiser theorem (LaTeX) |
 | [10_Entanglement_Hedging.tex](docs/10_Entanglement_Hedging.tex) | Tensor-network entanglement diversification (LaTeX) |
+| [11_Jarzynski_Harvesting.tex](docs/11_Jarzynski_Harvesting.tex) | Non-equilibrium free-energy estimation theorem (LaTeX) |
+| [12_Braid_Execution.tex](docs/12_Braid_Execution.tex) | Braid/Kauffman invariants + non-commutative ordering (LaTeX) |
+| [13_Koopman_Linearization.tex](docs/13_Koopman_Linearization.tex) | Koopman/EDMD linearization theorem (LaTeX) |
 | [glossary.md](docs/glossary.md) | Terminology |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | System overview & diagrams |
 

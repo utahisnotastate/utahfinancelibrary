@@ -1,0 +1,100 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{geometry}
+\usepackage{hyperref}
+\geometry{margin=1in}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{remark}{Remark}
+
+\title{Non-Equilibrium Free-Energy Estimation from Order-Flow Work}
+\author{Utah Finance Library --- Continuous-Time Topological Allocation Suite}
+\date{}
+
+\begin{document}
+\maketitle
+
+\noindent
+This note documents the stochastic-thermodynamics estimators in
+\texttt{src/models/jarzynski\_harvester.py}. The construction applies the
+Jarzynski equality and the Crooks fluctuation theorem to an ensemble of
+``work-like'' quantities derived from order-flow pressure, to recover an
+equilibrium free-energy difference and to measure how far the flow is from
+equilibrium.
+
+\section*{Theorem (as proposed, with the honest reading)}
+
+\begin{theorem}[Jarzynski / Crooks free-energy recovery]
+Let a market state transition from regime $A$ to $B$ in finite time $\tau$,
+driven by an external protocol $\lambda_t$ (order-flow imbalance), and let $W$ be
+the stochastic work done along a path $\gamma$. Then the Jarzynski equality holds:
+\begin{equation}
+\langle e^{-\beta W} \rangle = e^{-\beta \Delta F},
+\end{equation}
+where $\Delta F$ is the free-energy difference and $\beta$ the inverse
+temperature. By Crooks, $P_F(W)/P_R(-W) = e^{\beta(W-\Delta F)}$, and the average
+dissipated work satisfies
+\begin{equation}
+\beta\,\langle W_{\mathrm{diss}}\rangle
+= \beta\big(\langle W\rangle - \Delta F\big)
+= D_{\mathrm{KL}}\!\left(P_F \,\|\, P_R\right) \ge 0 .
+\end{equation}
+Individual trajectories with $W < \Delta F$ occur with strictly positive
+probability (transient, Evans--Searles ``second-law violations''), but the
+ensemble mean obeys the second law $\langle W\rangle \ge \Delta F$.
+\end{theorem}
+
+\begin{proof}
+The Jarzynski equality is the path-integral identity for a system driven from an
+initial equilibrium state; taking $-\tfrac1\beta\log$ of both sides yields the
+free-energy estimator. Jensen's inequality
+$\langle e^{-\beta W}\rangle \ge e^{-\beta\langle W\rangle}$ gives
+$\Delta F \le \langle W\rangle$, i.e.\ $\langle W_{\mathrm{diss}}\rangle\ge 0$.
+The identification of $\beta\langle W_{\mathrm{diss}}\rangle$ with the relative
+entropy $D_{\mathrm{KL}}(P_F\|P_R)$ is the Kawai--Parrondo--Van den Broeck
+relation, obtained by integrating the Crooks ratio against $P_F$. Existence of a
+positive-measure set of trajectories with $W<\Delta F$ follows from the Crooks
+ratio being finite and $P_R(-W)>0$ there. $\square$
+\end{proof}
+
+\section*{Implementation correspondence}
+
+\begin{itemize}
+\item \texttt{jarzynski\_free\_energy} returns
+$\Delta F = -\tfrac1\beta\,\mathrm{logmeanexp}(-\beta W)$ via a numerically stable
+log-mean-exp.
+\item \texttt{average\_dissipated\_work} returns $\langle W\rangle - \Delta F$,
+non-negative by the theorem (verified in the tests).
+\item \texttt{work\_distribution\_kl\_divergence} estimates
+$D_{\mathrm{KL}}(P_F(W)\,\|\,P_R(-W))$ from shared histograms; it is non-negative
+and vanishes when the forward and reflected-reverse distributions coincide.
+\item \texttt{extract\_fluctuation\_arbitrage} reports $\Delta F$, the mean
+dissipated work, the KL irreversibility scale, the fraction of transient
+sub-$\Delta F$ trajectories, and the per-path functional
+$\max(\Delta F - W,\,0)\ge 0$, routed through the transparent universal tithe.
+\end{itemize}
+
+\section*{Scope of the claim (honest framing)}
+
+\begin{remark}
+These are \emph{measurements}: a consistent estimate of an equilibrium
+free-energy gap from non-equilibrium data, and scalar diagnostics of
+irreversibility (distance from equilibrium). They are well-suited to regime and
+microstructure analysis around high-volatility events.
+\end{remark}
+
+\begin{remark}
+They do \textbf{not} constitute risk-free arbitrage. A transient trajectory with
+$W < \Delta F$ is a finite-probability microscopic fluctuation, not a repeatable,
+frictionless, executable profit; the ensemble still obeys
+$\langle W\rangle \ge \Delta F$. The fluctuation functional is a magnitude, not a
+P\&L: any strategy that attempts to monetise these fluctuations must be validated
+against execution cost, latency and out-of-sample performance like any other
+signal. We make no claim that the macroscopic second law of thermodynamics can be
+monetised.
+\end{remark}
+
+\end{document}

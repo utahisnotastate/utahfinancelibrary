@@ -1,0 +1,93 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{geometry}
+\usepackage{hyperref}
+\geometry{margin=1in}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{remark}{Remark}
+
+\title{Koopman Operator Linearization via Extended Dynamic Mode Decomposition}
+\author{Utah Finance Library --- Continuous-Time Topological Allocation Suite}
+\date{}
+
+\begin{document}
+\maketitle
+
+\noindent
+This note documents \texttt{src/models/koopman\_oracle.py}: an Extended Dynamic
+Mode Decomposition (EDMD) estimator of the Koopman operator for forward
+prediction and modal analysis of a financial state series.
+
+\section*{Theorem (Koopman linearity in observable space)}
+
+\begin{theorem}[Koopman operator]
+Let $x_{t+1} = F(x_t)$ be a (possibly nonlinear) dynamical system on a state space
+$\mathcal{M}$. The Koopman operator $\mathcal{K}$ acting on observables
+$g:\mathcal{M}\to\mathbb{C}$ by
+\begin{equation}
+(\mathcal{K} g)(x) = g(F(x))
+\end{equation}
+is \emph{linear} on the (infinite-dimensional) space of observables, even when
+$F$ is nonlinear. If $\{\varphi_k\}$ are Koopman eigenfunctions with eigenvalues
+$\{\mu_k\}$ and $g = \sum_k c_k \varphi_k$, then
+$g(x_t) = \sum_k c_k \mu_k^{\,t}\,\varphi_k(x_0)$, a closed-form linear evolution.
+\end{theorem}
+
+\begin{proof}
+Linearity is immediate: $\mathcal{K}(\alpha g + \beta h) = \alpha\,\mathcal{K}g +
+\beta\,\mathcal{K}h$ since composition with $F$ distributes over linear
+combinations. Eigenfunctions satisfy $\mathcal{K}\varphi_k = \mu_k \varphi_k$, so
+$\mathcal{K}^t \varphi_k = \mu_k^t \varphi_k$; expanding $g$ in the eigenbasis and
+applying $\mathcal{K}^t$ gives the stated evolution. $\square$
+\end{proof}
+
+\section*{EDMD finite-dimensional approximation}
+
+Given a dictionary $\Psi = (\psi_1,\dots,\psi_p)$ of observables and snapshot
+matrices $G_x = \Psi(X_{0:T-1})$, $G_y = \Psi(X_{1:T})$, EDMD forms the
+least-squares Koopman matrix
+\begin{equation}
+K = G_y\,G_x^{+},
+\end{equation}
+($G_x^+$ the Moore--Penrose pseudo-inverse). Forward prediction in lifted space is
+$\Psi(\hat x_{T+t}) = K^t\,\Psi(x_T)$; with the identity coordinates included in
+$\Psi$, the state forecast is the corresponding slice. The eigenvalues of $K$
+approximate the Koopman eigenvalues $\mu_k$.
+
+\section*{Implementation correspondence}
+
+\begin{itemize}
+\item \texttt{identity\_augmented\_dictionary} builds $\Psi$ with the identity
+coordinates first (so back-projection is a slice), then a constant and polynomial
+monomials.
+\item \texttt{koopman\_operator} returns $K = G_y G_x^{+}$;
+\texttt{koopman\_spectrum} returns its eigen-decomposition.
+\item \texttt{compute\_koopman\_edmd\_prediction} evaluates $K^t \Psi(x_T)$ and
+slices back the state. The tests confirm exact recovery of a linear system's
+one-step and multi-step evolution and of its eigenvalues.
+\end{itemize}
+
+\section*{Scope of the claim (honest framing)}
+
+\begin{remark}
+EDMD is an exact, closed-form linear model \emph{in the lifted observable space},
+with interpretable, reproducible eigenvalues and modes. For systems whose Koopman
+operator is well captured by the chosen dictionary it gives strong multi-step
+prediction (verified here on linear dynamics to machine precision).
+\end{remark}
+
+\begin{remark}
+It is \textbf{not} an oracle for chaotic markets. A \emph{finite} dictionary gives
+an \emph{approximation}; the true Koopman operator of a chaotic system is
+infinite-dimensional and generally not exactly representable. Forecast error grows
+with horizon, dictionary mis-specification, non-stationarity and noise. ``Pushing
+the data into infinite dimensions'' to obtain a ``perfectly straight, predictable
+line'' is a metaphor, not a guarantee: every forecast is a model to be validated
+out-of-sample, never a prophecy.
+\end{remark}
+
+\end{document}

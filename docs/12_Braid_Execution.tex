@@ -1,0 +1,98 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{geometry}
+\usepackage{hyperref}
+\geometry{margin=1in}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{remark}{Remark}
+
+\title{Braid-Group Diagnostics and Non-Commutative Execution Ordering}
+\author{Utah Finance Library --- Continuous-Time Topological Allocation Suite}
+\date{}
+
+\begin{document}
+\maketitle
+
+\noindent
+This note documents \texttt{src/core/braid\_router.py}: a Temperley--Lieb /
+Kauffman-bracket evaluator for the topological complexity of an execution
+schedule, and an optimiser for executing a basket under \emph{non-commutative}
+market impact.
+
+\section*{Theorem (knot invariant of an execution braid)}
+
+\begin{theorem}[Kauffman bracket via the Temperley--Lieb algebra]
+Let a sequence of pairwise reorderings of $n$ simultaneous child orders be a word
+in the Artin braid group $B_n$. Map each generator into the Temperley--Lieb
+algebra $TL_n(\delta)$, $\delta = -A^2 - A^{-2}$, by the Kauffman skein
+\begin{equation}
+\sigma_i \;\mapsto\; A\,\mathbf{1} + A^{-1} e_i,
+\qquad
+\sigma_i^{-1} \;\mapsto\; A^{-1}\,\mathbf{1} + A\,e_i,
+\end{equation}
+where $e_i$ are the TL generators satisfying $e_i^2 = \delta e_i$,
+$e_i e_{i\pm1} e_i = e_i$, $e_i e_j = e_j e_i$ for $|i-j|\ge 2$. Then the Markov
+trace of the resulting element equals the Kauffman bracket of the braid closure,
+and the writhe-normalised quantity $f_L = (-A^3)^{-w}\langle L\rangle$ is the
+Jones polynomial $V_L(t)$ at $t = A^{-4}$, an isotopy invariant of the closure.
+\end{theorem}
+
+\begin{proof}
+The skein relations make $\langle\cdot\rangle$ invariant under Reidemeister~II
+and~III; the loop value $\delta$ implements removal of disjoint circles. The
+$TL_n$ relations are exactly the diagram-composition rules (planar matchings,
+with each closed loop contributing a factor $\delta$), so the homomorphism
+$B_n \to TL_n$ is well defined. Closing the braid and counting loops realises the
+Markov trace, giving $\langle L\rangle$. Multiplying by $(-A^3)^{-w}$ cancels the
+Reidemeister~I anomaly, yielding the (oriented) isotopy invariant $V_L(A^{-4})$.
+$\square$
+\end{proof}
+
+\section*{Execution ordering under non-commutative impact}
+
+Let $L\in\mathbb{R}^{m\times m}_{\ge 0}$ be a cross-impact matrix where $L_{ab}$ is
+the extra slippage incurred on trade $b$ if $a$ executes before it. For an ordering
+$\pi$ the total modelled impact is
+\begin{equation}
+C(\pi) = \sum_{a \text{ before } b \text{ in } \pi} L_{ab}.
+\end{equation}
+Because $L$ is asymmetric, $C$ depends on order ($a$-then-$b$ differs from
+$b$-then-$a$): this is the linear-ordering problem, solved exactly by enumeration
+for small baskets and greedily otherwise. The realised reordering is realised
+concretely as a braid word whose free-reduced length is its crossing number.
+
+\section*{Implementation correspondence}
+
+\begin{itemize}
+\item \texttt{free\_reduce}, \texttt{crossing\_number}, \texttt{braid\_permutation},
+\texttt{writhe}: braid-word combinatorics.
+\item \texttt{kauffman\_bracket}, \texttt{jones\_polynomial\_value}: the $TL_n$
+diagram algebra and Markov trace (the tests verify $e_i^2=\delta e_i$,
+$e_1 e_2 e_1 = e_1$, the unknot normalisation, Reidemeister~II, and the trefoil
+Jones polynomial).
+\item \texttt{optimize\_execution\_braid}, \texttt{ordering\_impact\_cost}:
+minimisation of $C(\pi)$, with the saving versus the submitted order routed
+through the transparent universal tithe.
+\end{itemize}
+
+\section*{Scope of the claim (honest framing)}
+
+\begin{remark}
+The Jones/Kauffman value is an exact topological \emph{complexity descriptor} of
+an execution schedule, not a P\&L. The ordering optimiser minimises a
+\emph{modelled} cost over permutations.
+\end{remark}
+
+\begin{remark}
+There is \textbf{no} ``zero-slippage'' guarantee and no reduction of impact to an
+``absolute infimum''. The output is only as good as the cross-impact matrix $L$,
+which must be calibrated and validated on your own fills; a mis-specified $L$
+yields a mis-ordered basket. The optimiser reduces modelled cost relative to the
+naive order --- it does not make trading frictionless.
+\end{remark}
+
+\end{document}

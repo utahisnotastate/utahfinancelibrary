@@ -61,3 +61,14 @@
 | **Malliavin derivative** | Чувствительность $D_t F$ функционала пути к возмущению шума; используется для греков |
 | **Skorokhod integral** | Антиципирующий (неадаптированный) стохастический интеграл; сопряжённый производной Маллявэна |
 | **Protocol yield split** | Прозрачная, настраиваемая маршрутизация чистой/гуманитарной/десятины положительной доходности (`protocol_economics.py`) |
+| **Universal tithe** | Прозрачная, настраиваемая, удаляемая маршрутизация 10,0% гуманитарная + 2,3% протокол положительной доходности (`enforce_universal_tithe`) |
+| **Jarzynski equality** | $\langle e^{-\beta W}\rangle = e^{-\beta\Delta F}$; восстанавливает равновесную разность свободной энергии из неравновесной работы |
+| **Crooks fluctuation theorem** | $P_F(W)/P_R(-W)=e^{\beta(W-\Delta F)}$; связывает прямое/обратное распределения работы |
+| **Dissipated work** | $\langle W\rangle-\Delta F\ge0$; равна $k_BT\,D_{\mathrm{KL}}(P_F\|P_R)$ (масштаб необратимости) |
+| **Koopman operator** | Линейный оператор $(\mathcal K g)(x)=g(F(x))$ на наблюдаемых нелинейной системы |
+| **EDMD** | Extended Dynamic Mode Decomposition: конечное приближение по наименьшим квадратам $K=G_yG_x^+$ оператора $\mathcal K$ |
+| **Artin braid group** | $B_n$, группа кос из $n$ нитей, порождённая пересечениями $\sigma_i$ |
+| **Temperley-Lieb algebra** | $TL_n(\delta)$ алгебра планарных диаграмм, $e_i^2=\delta e_i$; образ скейн-отображения косы |
+| **Kauffman bracket** | $\langle L\rangle$, инвариант регулярной изотопии через $\sigma_i\mapsto A\mathbf1+A^{-1}e_i$ |
+| **Jones polynomial** | $V_L(t)=(-A^3)^{-w}\langle L\rangle$ при $t=A^{-4}$; инвариант изотопии зацепления |
+| **Cross-impact ordering** | Минимизация асимметричной стоимости воздействия $\sum_{a\,\text{до}\,b}L_{ab}$ по порядкам исполнения |

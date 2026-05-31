@@ -18,6 +18,21 @@ from src.models.tensor_network_hedge import (
     mps_decompose,
     von_neumann_portfolio_entropy,
 )
+from src.models.jarzynski_harvester import (
+    FluctuationHarvest,
+    average_dissipated_work,
+    extract_fluctuation_arbitrage,
+    jarzynski_free_energy,
+    log_mean_exp,
+    work_distribution_kl_divergence,
+)
+from src.models.koopman_oracle import (
+    KoopmanForecast,
+    compute_koopman_edmd_prediction,
+    identity_augmented_dictionary,
+    koopman_operator,
+    koopman_spectrum,
+)
 
 if is_jax_available():
     from src.models.pinn_jax_runtime import OrthogonalWaveStatePredictor
@@ -59,4 +74,15 @@ __all__ = [
     "effective_number_of_bets",
     "bipartition_entanglement_entropy",
     "entanglement_diversification_weights",
+    "FluctuationHarvest",
+    "jarzynski_free_energy",
+    "average_dissipated_work",
+    "work_distribution_kl_divergence",
+    "extract_fluctuation_arbitrage",
+    "log_mean_exp",
+    "KoopmanForecast",
+    "compute_koopman_edmd_prediction",
+    "koopman_operator",
+    "koopman_spectrum",
+    "identity_augmented_dictionary",
 ]

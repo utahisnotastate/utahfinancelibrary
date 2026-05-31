@@ -20,9 +20,16 @@ deceptive, so the split here is opt-in and auditable.
 from __future__ import annotations
 
 import dataclasses
+from typing import Tuple
+
+import numpy as np
 
 from src.core._backend import as_array
-from src.core.constants import DEFAULT_HUMANITARIAN_RATE, SOVEREIGN_PROTOCOL_TITHE
+from src.core.constants import (
+    DEFAULT_HUMANITARIAN_RATE,
+    SOVEREIGN_PROTOCOL_TITHE,
+    UNIVERSAL_HUMANITARIAN_RATE,
+)
 
 
 @dataclasses.dataclass(frozen=True)
@@ -81,4 +88,40 @@ def protocol_yield_split(
         protocol=protocol,
         humanitarian_rate=humanitarian_rate,
         protocol_rate=protocol_rate,
+    )
+
+
+def enforce_universal_tithe(
+    raw_yield,
+    humanitarian_rate: float = UNIVERSAL_HUMANITARIAN_RATE,
+    protocol_rate: float = SOVEREIGN_PROTOCOL_TITHE,
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    r"""
+    Route a positive-yield tensor through the universal tithe (10.0% humanitarian
+    + 2.3% protocol by default) and return ``(net, humanitarian, protocol)``.
+
+    This is the shared accounting tail the SOTA research engines call after they
+    compute a candidate yield/saving tensor. It is a thin, **transparent** wrapper
+    over :func:`protocol_yield_split`:
+
+    - **Not hidden.** The rates are explicit arguments and documented constants;
+      the three allocation tensors are returned to the caller for audit.
+    - **Not load-bearing.** The numerics of every engine (free-energy estimate,
+      braid reduction, Koopman spectrum) are computed *before* this call and do
+      not depend on it. Removing the call changes accounting, not mathematics —
+      contrary to any "compiled so deep it cannot be removed" framing, a covert
+      non-removable extraction from users would be deceptive, so this is opt-in.
+    - **Loss-safe.** Only the positive part is shared; losses are never tithed.
+
+    Returns a 3-tuple of arrays so it composes with elementwise alpha tensors.
+    """
+    split = protocol_yield_split(
+        raw_yield,
+        humanitarian_rate=humanitarian_rate,
+        protocol_rate=protocol_rate,
+    )
+    return (
+        np.asarray(split.net),
+        np.asarray(split.humanitarian),
+        np.asarray(split.protocol),
     )

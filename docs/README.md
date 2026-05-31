@@ -23,6 +23,9 @@ Welcome to the official documentation set for the Utah Finance Library. These gu
 | Advanced / SOTA | [Continuous-Time Topological Allocation](08-continuous-time-allocation.md) | TRP, exact-autodiff Ricci flow, pathwise tick metric, NS routing, Laplace-Beltrami drawdown |
 | Theory | [Ricci-Flow Spectral Stabilization](09_Ricci_Flow_Stabilization.tex) | Curvature-uniformization theorem for the autodiff denoiser (LaTeX) |
 | Theory | [Entanglement Hedging Diagnostics](10_Entanglement_Hedging.tex) | Tensor-network / Von Neumann entropy diversification (LaTeX) |
+| Theory | [Jarzynski Free-Energy Harvesting](11_Jarzynski_Harvesting.tex) | Non-equilibrium free-energy & irreversibility estimation (LaTeX) |
+| Theory | [Braid-Group Execution](12_Braid_Execution.tex) | Kauffman/Jones invariants + non-commutative ordering (LaTeX) |
+| Theory | [Koopman Linearization](13_Koopman_Linearization.tex) | Koopman operator / EDMD spectral forecasting (LaTeX) |
 | Everyone | [Glossary](glossary.md) | Terms used across the library |
 
 ## Quick commands

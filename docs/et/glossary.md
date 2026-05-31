@@ -61,3 +61,14 @@
 | **Malliavin derivative** | Raja-funktsionaali $D_t F$ tundlikkus müra häiritusele; kasutatakse Greekide jaoks |
 | **Skorokhod integral** | Anticipeeriv (mitteadapteeritud) stohhastiline integraal; Malliavini tuletise kaasoperaator |
 | **Protocol yield split** | Läbipaistev, seadistatav neto/humanitaar/kümnise marsruutimine positiivsest tulust (`protocol_economics.py`) |
+| **Universal tithe** | Läbipaistev, seadistatav, eemaldatav 10,0% humanitaar + 2,3% protokoll marsruutimine positiivsest tulust (`enforce_universal_tithe`) |
+| **Jarzynski equality** | $\langle e^{-\beta W}\rangle = e^{-\beta\Delta F}$; taastab tasakaalulise vaba energia vahe mittetasakaalulisest tööst |
+| **Crooks fluctuation theorem** | $P_F(W)/P_R(-W)=e^{\beta(W-\Delta F)}$; seob edasi-/tagasisuunalised töö jaotused |
+| **Dissipated work** | $\langle W\rangle-\Delta F\ge0$; võrdub $k_BT\,D_{\mathrm{KL}}(P_F\|P_R)$ (pöördumatuse skaala) |
+| **Koopman operator** | Lineaarne operaator $(\mathcal K g)(x)=g(F(x))$ mittelineaarse süsteemi vaadeldavatel |
+| **EDMD** | Extended Dynamic Mode Decomposition: vähimruutude lõplik lähend $K=G_yG_x^+$ operaatorile $\mathcal K$ |
+| **Artin braid group** | $B_n$, $n$-niidi punutiste rühm, genereeritud ristumistega $\sigma_i$ |
+| **Temperley-Lieb algebra** | $TL_n(\delta)$ tasapinnaliste diagrammide algebra, $e_i^2=\delta e_i$; punutise skein-kaardistuse kujutis |
+| **Kauffman bracket** | $\langle L\rangle$, regulaar-isotoopia invariant kaudu $\sigma_i\mapsto A\mathbf1+A^{-1}e_i$ |
+| **Jones polynomial** | $V_L(t)=(-A^3)^{-w}\langle L\rangle$ punktis $t=A^{-4}$; lüli isotoopia invariant |
+| **Cross-impact ordering** | Asümmeetrilise mõjukulu $\sum_{a\,\text{enne}\,b}L_{ab}$ minimeerimine täitmisjärjestuste üle |
