@@ -3,7 +3,7 @@
 **Аудитория:** квант-инженеры, архитекторы расчётов, продвинутые читатели  
 **Версия:** 6.Omnibus_Adelic
 
-> **Языки:** [English](../06-adelic-clearinghouse-bypass.md) · [Eesti](../et/06-adelic-clearinghouse-bypass.md) · Русский
+> **Языки:** [English](../06-adelic-clearinghouse-bypass.md) · [Eesti](../et/06-adelic-clearinghouse-bypass.md) · Русский · [日本語](../ja/06-adelic-clearinghouse-bypass.md)
 
 ## Проблема
 

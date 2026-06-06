@@ -3,7 +3,7 @@
 **Sihtrühm:** kvantuurijad, `riskfolio-lib`-ist migreeruvad portfelliinsenerid  
 **Versioon:** 6.Omnibus_Adelic
 
-> **Keeled:** [English](../08-continuous-time-allocation.md) · Eesti · [Русский](../ru/08-continuous-time-allocation.md)
+> **Keeled:** [English](../08-continuous-time-allocation.md) · Eesti · [Русский](../ru/08-continuous-time-allocation.md) · [日本語](../ja/08-continuous-time-allocation.md)
 
 See mooduli komplekt raamib portfelli optimeerimise ümber staatiliselt
 ruutprogrammeerimiselt diskreetsetel kovariatsioonimaatriksitel **pidevaja

@@ -4,7 +4,7 @@
 **Версия:** 6.Omnibus_Adelic  
 **Уровень чтения:** от 8 лет
 
-> **Языки:** [English](../04-children-beginners.md) · [Eesti](../et/04-children-beginners.md) · Русский
+> **Языки:** [English](../04-children-beginners.md) · [Eesti](../et/04-children-beginners.md) · Русский · [日本語](../ja/04-children-beginners.md)
 
 ## Познакомься со своим денежным роботом
 

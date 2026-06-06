@@ -3,7 +3,7 @@
 **Аудитория:** ML-инженеры, квант-исследователи  
 **Версия:** 6.Omnibus_Adelic
 
-> **Языки:** [English](../07-wave-pinn-alpha-engine.md) · [Eesti](../et/07-wave-pinn-alpha-engine.md) · Русский
+> **Языки:** [English](../07-wave-pinn-alpha-engine.md) · [Eesti](../et/07-wave-pinn-alpha-engine.md) · Русский · [日本語](../ja/07-wave-pinn-alpha-engine.md)
 
 ## Почему PINN вместо ML «чёрного ящика»?
 

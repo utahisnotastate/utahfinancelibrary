@@ -3,7 +3,7 @@
 **Аудитория:** нетехнические руководители, главы семейных офисов, основатели фондов  
 **Версия:** 6.Omnibus_Adelic
 
-> **Языки:** [English](../03-founders-family-offices.md) · [Eesti](../et/03-founders-family-offices.md) · Русский
+> **Языки:** [English](../03-founders-family-offices.md) · [Eesti](../et/03-founders-family-offices.md) · Русский · [日本語](../ja/03-founders-family-offices.md)
 
 ## Что такое Utah Finance Library?
 

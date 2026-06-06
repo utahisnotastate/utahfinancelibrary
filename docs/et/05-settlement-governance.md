@@ -3,7 +3,7 @@
 **Sihtrühm:** operatsioonid, vastavus, fondiadministraatorid  
 **Versioon:** 6.Omnibus_Adelic
 
-> **Keeled:** [English](../05-settlement-governance.md) · Eesti · [Русский](../ru/05-settlement-governance.md)
+> **Keeled:** [English](../05-settlement-governance.md) · Eesti · [Русский](../ru/05-settlement-governance.md) · [日本語](../ja/05-settlement-governance.md)
 
 ## Eesmärk
 

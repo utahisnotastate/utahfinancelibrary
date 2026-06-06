@@ -3,7 +3,7 @@
 **Sihtrühm:** tarkvarainsenerid, DevOps, süsteemiarhitektid  
 **Versioon:** 6.Omnibus_Adelic
 
-> **Keeled:** [English](../01-engineers-architects.md) · Eesti · [Русский](../ru/01-engineers-architects.md)
+> **Keeled:** [English](../01-engineers-architects.md) · Eesti · [Русский](../ru/01-engineers-architects.md) · [日本語](../ja/01-engineers-architects.md)
 
 ## Ülevaade
 

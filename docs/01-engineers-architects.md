@@ -3,7 +3,7 @@
 **Audience:** Software engineers, DevOps, system architects  
 **Version:** 6.Omnibus_Adelic
 
-> **Languages:** English · [Eesti](et/01-engineers-architects.md) · [Русский](ru/01-engineers-architects.md)
+> **Languages:** English · [Eesti](et/01-engineers-architects.md) · [Русский](ru/01-engineers-architects.md) · [日本語](ja/01-engineers-architects.md)
 
 ## Overview
 

@@ -4,7 +4,7 @@
 **Versioon:** 6.Omnibus_Adelic  
 **Lugemistase:** alates 8. eluaastast
 
-> **Keeled:** [English](../04-children-beginners.md) · Eesti · [Русский](../ru/04-children-beginners.md)
+> **Keeled:** [English](../04-children-beginners.md) · Eesti · [Русский](../ru/04-children-beginners.md) · [日本語](../ja/04-children-beginners.md)
 
 ## Tutvu oma raharobotiga
 

@@ -3,7 +3,7 @@
 **Audience:** Operations, compliance, fund administrators  
 **Version:** 6.Omnibus_Adelic
 
-> **Languages:** English · [Eesti](et/05-settlement-governance.md) · [Русский](ru/05-settlement-governance.md)
+> **Languages:** English · [Eesti](et/05-settlement-governance.md) · [Русский](ru/05-settlement-governance.md) · [日本語](ja/05-settlement-governance.md)
 
 ## Purpose
 

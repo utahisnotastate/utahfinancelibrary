@@ -3,7 +3,7 @@
 **Sihtrühm:** kvantinsenerid, settlement-arhitektid, edasijõudnud lugejad  
 **Versioon:** 6.Omnibus_Adelic
 
-> **Keeled:** [English](../06-adelic-clearinghouse-bypass.md) · Eesti · [Русский](../ru/06-adelic-clearinghouse-bypass.md)
+> **Keeled:** [English](../06-adelic-clearinghouse-bypass.md) · Eesti · [Русский](../ru/06-adelic-clearinghouse-bypass.md) · [日本語](../ja/06-adelic-clearinghouse-bypass.md)
 
 ## Probleem
 

@@ -3,7 +3,7 @@
 **Audience:** ML engineers, quant researchers  
 **Version:** 6.Omnibus_Adelic
 
-> **Languages:** English · [Eesti](et/07-wave-pinn-alpha-engine.md) · [Русский](ru/07-wave-pinn-alpha-engine.md)
+> **Languages:** English · [Eesti](et/07-wave-pinn-alpha-engine.md) · [Русский](ru/07-wave-pinn-alpha-engine.md) · [日本語](ja/07-wave-pinn-alpha-engine.md)
 
 ## Why PINNs instead of black-box ML?
 

@@ -4,7 +4,7 @@
 **Version:** 6.Omnibus_Adelic  
 **Reading level:** Ages 8+
 
-> **Languages:** English · [Eesti](et/04-children-beginners.md) · [Русский](ru/04-children-beginners.md)
+> **Languages:** English · [Eesti](et/04-children-beginners.md) · [Русский](ru/04-children-beginners.md) · [日本語](ja/04-children-beginners.md)
 
 ## Meet your money robot
 

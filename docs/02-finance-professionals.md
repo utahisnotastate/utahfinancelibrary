@@ -3,7 +3,7 @@
 **Audience:** Quantitative analysts, portfolio managers, execution traders, risk officers  
 **Version:** 6.Omnibus_Adelic
 
-> **Languages:** English · [Eesti](et/02-finance-professionals.md) · [Русский](ru/02-finance-professionals.md)
+> **Languages:** English · [Eesti](et/02-finance-professionals.md) · [Русский](ru/02-finance-professionals.md) · [日本語](ja/02-finance-professionals.md)
 
 ## Executive summary
 

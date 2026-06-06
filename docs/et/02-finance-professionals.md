@@ -3,7 +3,7 @@
 **Sihtrühm:** kvantanalüütikud, portfellihaldurid, täitmiskauplejad, riskiohvitserid  
 **Versioon:** 6.Omnibus_Adelic
 
-> **Keeled:** [English](../02-finance-professionals.md) · Eesti · [Русский](../ru/02-finance-professionals.md)
+> **Keeled:** [English](../02-finance-professionals.md) · Eesti · [Русский](../ru/02-finance-professionals.md) · [日本語](../ja/02-finance-professionals.md)
 
 ## Kokkuvõte juhtkonnale
 

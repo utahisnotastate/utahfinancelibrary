@@ -3,7 +3,7 @@
 **Аудитория:** квант-исследователи, портфельные инженеры, мигрирующие с `riskfolio-lib`  
 **Версия:** 6.Omnibus_Adelic
 
-> **Языки:** [English](../08-continuous-time-allocation.md) · [Eesti](../et/08-continuous-time-allocation.md) · Русский
+> **Языки:** [English](../08-continuous-time-allocation.md) · [Eesti](../et/08-continuous-time-allocation.md) · Русский · [日本語](../ja/08-continuous-time-allocation.md)
 
 Этот набор модулей переосмысливает оптимизацию портфеля, уходя от статического
 квадратичного программирования на дискретных матрицах ковариации к **геометрии

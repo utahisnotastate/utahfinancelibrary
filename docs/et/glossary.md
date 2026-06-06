@@ -1,6 +1,6 @@
 # Sõnastik
 
-> **Keeled:** [English](../glossary.md) · Eesti · [Русский](../ru/glossary.md)
+> **Keeled:** [English](../glossary.md) · Eesti · [Русский](../ru/glossary.md) · [日本語](../ja/glossary.md)
 
 > Mõisted on jäetud algkujule (need vastavad koodi ja API nimedele); määratlused on tõlgitud eesti keelde.
 

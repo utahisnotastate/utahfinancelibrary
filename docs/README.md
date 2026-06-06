@@ -3,11 +3,12 @@
 **Version 6.Omnibus_Adelic**  
 **Repository:** [github.com/utahisnotastate/utahfinancelibrary](https://github.com/utahisnotastate/utahfinancelibrary)
 
-> **Languages:** English · [Eesti](et/README.md) · [Русский](ru/README.md)
+> **Languages:** English · [Eesti](et/README.md) · [Русский](ru/README.md) · [日本語](ja/README.md)
 >
-> Full Estonian and Russian translations live in completely separate files under
-> [`docs/et/`](et/README.md) and [`docs/ru/`](ru/README.md). Code, file paths, API
-> names and mathematical notation are kept identical across languages.
+> Full Estonian, Russian and Japanese translations live in completely separate
+> files under [`docs/et/`](et/README.md), [`docs/ru/`](ru/README.md) and
+> [`docs/ja/`](ja/README.md). Code, file paths, API names and mathematical
+> notation are kept identical across languages.
 
 Welcome to the official documentation set for the Utah Finance Library. These guides are written for different roles and experience levels. Start with the guide that matches who you are.
 
@@ -43,6 +44,40 @@ python -m src.models.pinn_jax_runtime
 # Validate Utahfile v6 hooks
 python -m src.app.ignite --manifest Utahfile --dry-run
 ```
+
+## Research / SOTA physics modules
+
+Beyond the audience guides above, the library carries research-grade modules that
+borrow machinery from mathematical physics. Each is a genuine, tested
+estimator/diagnostic with explicit honest-framing (no free-lunch, oracle, or
+zero-slippage claims). Their formal notes are kept language-neutral (universal
+math) in the LaTeX appendices:
+
+| Module | Purpose | Theory note |
+|--------|---------|-------------|
+| `holographic_projection.py` | AdS/CFT-style bounded order-book pressure feature | — |
+| `tensor_network_hedge.py` | MPS / Von Neumann entropy diversification diagnostic | [10_Entanglement_Hedging.tex](10_Entanglement_Hedging.tex) |
+| `chrono_drift.py` | Malliavin / Skorokhod Greeks on complete paths (no look-ahead) | — |
+| `jarzynski_harvester.py` | Jarzynski free-energy + Crooks irreversibility estimator | [11_Jarzynski_Harvesting.tex](11_Jarzynski_Harvesting.tex) |
+| `braid_router.py` | Kauffman/Jones invariant + non-commutative execution ordering | [12_Braid_Execution.tex](12_Braid_Execution.tex) |
+| `koopman_oracle.py` | Koopman / EDMD spectral linear forecast in lifted space | [13_Koopman_Linearization.tex](13_Koopman_Linearization.tex) |
+
+All positive-yield/saving outputs route through the transparent, configurable,
+removable `enforce_universal_tithe` accounting helper.
+
+## Paying Utah
+
+The 2.3% protocol tithe and humanitarian split are accounting routes inside the
+library. To **settle an actual payment to Utah** — sponsorship, a tithe
+remittance, or support — contact Utah directly:
+
+> **Contact:** [utah@utahcreates.com](mailto:utah@utahcreates.com)
+
+For now this is a manual, human step (email to arrange method, reference and
+amount). **A dedicated GUI app is planned** that will manage Utah payments end to
+end — generating remittance details, tracking the tithe/humanitarian split, and
+recording receipts. Until it ships, the email above is the canonical way to pay
+Utah.
 
 ## Important disclaimer
 

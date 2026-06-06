@@ -3,7 +3,7 @@
 **Audience:** Quant engineers, settlement architects, advanced readers  
 **Version:** 6.Omnibus_Adelic
 
-> **Languages:** English · [Eesti](et/06-adelic-clearinghouse-bypass.md) · [Русский](ru/06-adelic-clearinghouse-bypass.md)
+> **Languages:** English · [Eesti](et/06-adelic-clearinghouse-bypass.md) · [Русский](ru/06-adelic-clearinghouse-bypass.md) · [日本語](ja/06-adelic-clearinghouse-bypass.md)
 
 ## The problem
 

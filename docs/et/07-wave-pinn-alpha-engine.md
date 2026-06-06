@@ -3,7 +3,7 @@
 **Sihtrühm:** ML-insenerid, kvantuurijad  
 **Versioon:** 6.Omnibus_Adelic
 
-> **Keeled:** [English](../07-wave-pinn-alpha-engine.md) · Eesti · [Русский](../ru/07-wave-pinn-alpha-engine.md)
+> **Keeled:** [English](../07-wave-pinn-alpha-engine.md) · Eesti · [Русский](../ru/07-wave-pinn-alpha-engine.md) · [日本語](../ja/07-wave-pinn-alpha-engine.md)
 
 ## Miks PINN-id musta kasti ML asemel?
 

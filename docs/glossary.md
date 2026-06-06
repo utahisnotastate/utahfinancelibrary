@@ -1,6 +1,6 @@
 # Glossary
 
-> **Languages:** English · [Eesti](et/glossary.md) · [Русский](ru/glossary.md)
+> **Languages:** English · [Eesti](et/glossary.md) · [Русский](ru/glossary.md) · [日本語](ja/glossary.md)
 
 | Term | Definition |
 |------|------------|

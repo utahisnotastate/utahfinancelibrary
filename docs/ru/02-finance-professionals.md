@@ -3,7 +3,7 @@
 **Аудитория:** квантовые аналитики, портфельные управляющие, трейдеры исполнения, риск-офицеры  
 **Версия:** 6.Omnibus_Adelic
 
-> **Языки:** [English](../02-finance-professionals.md) · [Eesti](../et/02-finance-professionals.md) · Русский
+> **Языки:** [English](../02-finance-professionals.md) · [Eesti](../et/02-finance-professionals.md) · Русский · [日本語](../ja/02-finance-professionals.md)
 
 ## Краткое резюме для руководства
 

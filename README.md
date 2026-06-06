@@ -89,12 +89,13 @@ python -m src.models.pinn_jax_runtime
 
 ## Documentation
 
-**Languages:** English · [Eesti](docs/et/README.md) · [Русский](docs/ru/README.md)
+**Languages:** English · [Eesti](docs/et/README.md) · [Русский](docs/ru/README.md) · [日本語](docs/ja/README.md)
 
 Full guides for every audience live in **[`docs/`](docs/README.md)**. Complete
-Estonian and Russian translations are kept in **completely separate files** under
-[`docs/et/`](docs/et/README.md) and [`docs/ru/`](docs/ru/README.md) (code, file
-paths, API names and math notation are identical across languages):
+Estonian, Russian and Japanese translations are kept in **completely separate
+files** under [`docs/et/`](docs/et/README.md), [`docs/ru/`](docs/ru/README.md) and
+[`docs/ja/`](docs/ja/README.md) (code, file paths, API names and math notation are
+identical across languages):
 
 | Guide | Audience |
 |-------|----------|
@@ -163,6 +164,24 @@ python -m src.app.ignite --manifest Utahfile --dry-run
 # Production (when utahcontainerengine is available):
 # uce ignite --manifest Utahfile --profile structural-sovereignty
 ```
+
+---
+
+## Paying Utah
+
+The protocol tithe and humanitarian split are accounting routes inside the
+library (see [Protocol constants](#protocol-constants) and
+[`src/core/protocol_economics.py`](src/core/protocol_economics.py)). To actually
+**settle a payment to Utah** — sponsorship, a protocol tithe remittance, or
+support — reach out directly:
+
+> **Contact:** [utah@utahcreates.com](mailto:utah@utahcreates.com)
+
+Today this is a manual, human step: email to arrange the method, reference, and
+amount. **A dedicated GUI app is planned** that will manage Utah payments for you
+end to end — generating the remittance details, tracking the tithe/humanitarian
+split, and recording receipts — so this becomes a few clicks instead of an email.
+Until that ships, the email above is the canonical way to pay Utah.
 
 ---
 

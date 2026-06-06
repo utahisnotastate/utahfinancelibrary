@@ -3,7 +3,7 @@
 **Audience:** Non-technical principals, family office leaders, fund founders  
 **Version:** 6.Omnibus_Adelic
 
-> **Languages:** English · [Eesti](et/03-founders-family-offices.md) · [Русский](ru/03-founders-family-offices.md)
+> **Languages:** English · [Eesti](et/03-founders-family-offices.md) · [Русский](ru/03-founders-family-offices.md) · [日本語](ja/03-founders-family-offices.md)
 
 ## What is the Utah Finance Library?
 

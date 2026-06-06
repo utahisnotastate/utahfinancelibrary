@@ -3,7 +3,7 @@
 **Аудитория:** инженеры-программисты, DevOps, системные архитекторы  
 **Версия:** 6.Omnibus_Adelic
 
-> **Языки:** [English](../01-engineers-architects.md) · [Eesti](../et/01-engineers-architects.md) · Русский
+> **Языки:** [English](../01-engineers-architects.md) · [Eesti](../et/01-engineers-architects.md) · Русский · [日本語](../ja/01-engineers-architects.md)
 
 ## Обзор
 

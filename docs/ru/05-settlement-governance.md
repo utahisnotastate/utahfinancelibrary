@@ -3,7 +3,7 @@
 **Аудитория:** операции, комплаенс, администраторы фондов  
 **Версия:** 6.Omnibus_Adelic
 
-> **Языки:** [English](../05-settlement-governance.md) · [Eesti](../et/05-settlement-governance.md) · Русский
+> **Языки:** [English](../05-settlement-governance.md) · [Eesti](../et/05-settlement-governance.md) · Русский · [日本語](../ja/05-settlement-governance.md)
 
 ## Назначение
 

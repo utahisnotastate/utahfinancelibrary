@@ -3,7 +3,7 @@
 **Sihtrühm:** mittetehnilised juhid, perekontorite juhid, fondiasutajad  
 **Versioon:** 6.Omnibus_Adelic
 
-> **Keeled:** [English](../03-founders-family-offices.md) · Eesti · [Русский](../ru/03-founders-family-offices.md)
+> **Keeled:** [English](../03-founders-family-offices.md) · Eesti · [Русский](../ru/03-founders-family-offices.md) · [日本語](../ja/03-founders-family-offices.md)
 
 ## Mis on Utah Finance Library?
 
